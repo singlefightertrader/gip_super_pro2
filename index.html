@@ -1,157 +1,199 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GIP V5 · AI SHIELDED SNIPER</title>
+<title>GIP V5 · IMMORTAL LOCKED</title>
 <style>
-:root{
---bg:#050608;--card:#0d1117;--accent:#00eaff;
---green:#00ff99;--red:#ff4d4d;--yellow:#ffcc00;--border:#1f2937;
-}
-body{margin:0;font-family:Arial;background:var(--bg);color:#e6edf3;padding:15px;}
-.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:15px;margin-bottom:15px;}
-input{width:100%;background:#000;border:1px solid var(--border);color:#fff;padding:8px;margin-bottom:8px;border-radius:6px;}
-button{width:100%;padding:12px;border:none;border-radius:8px;background:var(--accent);color:#000;font-weight:bold;cursor:pointer;}
-.res{padding:15px;border-radius:12px;text-align:center;margin-bottom:10px;}
-.green{background:rgba(0,255,153,0.1);border:1px solid var(--green);color:var(--green);}
-.red{background:rgba(255,77,77,0.1);border:1px solid var(--red);color:var(--red);}
-.yellow{background:rgba(255,204,0,0.1);border:1px solid var(--yellow);color:var(--yellow);}
-.gray{background:#111;border:1px solid #333;color:#888;}
-.copy{background:#222;color:var(--accent);border:none;padding:4px 8px;font-size:10px;border-radius:4px;cursor:pointer;}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-.m5{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;}
+body{margin:0;font-family:Arial;background:#030508;color:#e6edf3;padding:15px;}
+.card{background:#0d1117;border:1px solid #30363d;border-radius:12px;padding:15px;margin-bottom:15px;}
+h2{margin:0 0 10px 0;color:#58a6ff;font-size:16px;text-transform:uppercase;letter-spacing:1px;}
+input{width:100%;padding:10px;margin:5px 0;background:#010409;border:1px solid #30363d;color:#79c0ff;border-radius:6px;font-family:monospace;}
+input:focus{border-color:#58a6ff;outline:none;}
+button{width:100%;padding:12px;margin-top:10px;border-radius:6px;font-weight:bold;background:#238636;border:none;color:#fff;cursor:pointer;}
+button:hover{background:#2ea043;}
+.status{padding:10px;margin:5px 0;border-radius:6px;text-align:center;font-weight:bold;text-transform:uppercase;}
+.green{color:#3fb950; border: 1px solid #238636; background: rgba(35,134,54,0.1);}
+.red{color:#f85149; border: 1px solid #da3633; background: rgba(218,54,51,0.1);}
+.yellow{color:#d29922; border: 1px solid #9e6a03; background: rgba(158,106,3,0.1);}
+.gray{color:#8b949e; border: 1px solid #30363d;}
+.big{font-size:22px;}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+.mission-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;}
+.m-box{padding:12px;border-radius:8px;text-align:center;font-weight:900;font-size:12px;border:1px solid rgba(255,255,255,0.1);}
+.m-h1{background:#8957e5; color:#fff;} .m-m30{background:#1f6feb; color:#fff;}
+.m-m15{background:#d29922; color:#000;} .m-m5{background:#238636; color:#fff;}
+.ai-chat-box{background:rgba(88,166,255,0.1); border:1px dashed #58a6ff; border-radius:10px; padding:15px; margin-top:10px;}
+.ai-chat-box h3{margin:0 0 5px 0; font-size:13px; color:#58a6ff;}
+.ai-chat-box p{margin:0; font-size:13px; font-style:italic; line-height:1.4;}
+.risk-box{font-family:monospace; font-size:13px; color:#c9d1d9; line-height:1.8;}
+.log{background:#010409; padding:10px; border-radius:8px; font-family:monospace; font-size:11px; height:100px; overflow-y:auto; color:#8b949e; border:1px solid #30363d;}
 </style>
 </head>
 <body>
 
 <div class="card">
-<b>STRUCTURE (H1 - M15)</b>
-<div class="grid">
-<input id="h1h" placeholder="H1 High">
-<input id="h1l" placeholder="H1 Low">
-<input id="m30h" placeholder="M30 High">
-<input id="m30l" placeholder="M30 Low">
-<input id="m15h" placeholder="M15 High">
-<input id="m15l" placeholder="M15 Low">
-</div>
-<div class="grid">
-<input id="h4h" placeholder="H4 High (optional)">
-<input id="h4l" placeholder="H4 Low (optional)">
-<input id="h2h" placeholder="H2 High (block)">
-<input id="h2l" placeholder="H2 Low (block)">
-</div>
-<button onclick="lock()">LOCK CORE</button>
+    <h2>🔒 STRUCTURE CORE</h2>
+    <div class="grid">
+        <input type="number" id="h1h" placeholder="H1 H"><input type="number" id="h1l" placeholder="H1 L">
+        <input type="number" id="m30h" placeholder="M30 H"><input type="number" id="m30l" placeholder="M30 L">
+        <input type="number" id="m15h" placeholder="M15 H"><input type="number" id="m15l" placeholder="M15 L">
+        <input type="number" id="h4h" placeholder="H4 H"><input type="number" id="h4l" placeholder="H4 L">
+        <input type="number" id="h2h" placeholder="H2 H"><input type="number" id="h2l" placeholder="H2 L">
+    </div>
+    <button onclick="lockSystem()">INITIALIZE SYSTEM</button>
 </div>
 
 <div class="card">
-<b>M5 SEQUENCE (12 CLOSED CANDLES)</b>
-<div class="m5">
-<input id="m1"><input id="m2"><input id="m3"><input id="m4">
-<input id="m5_5"><input id="m6"><input id="m7"><input id="m8">
-<input id="m9"><input id="m10"><input id="m11"><input id="m12">
+    <h2>📥 M5 DATA FEED</h2>
+    <div class="grid">
+        <input type="number" id="m5_1"><input type="number" id="m5_2"><input type="number" id="m5_3"><input type="number" id="m5_4">
+        <input type="number" id="m5_5"><input type="number" id="m5_6"><input type="number" id="m5_7"><input type="number" id="m5_8">
+        <input type="number" id="m5_9"><input type="number" id="m5_10"><input type="number" id="m5_11"><input type="number" id="m5_12">
+    </div>
+    <button style="background:#1f6feb" onclick="processEngine()">ANALYZE MARKET</button>
 </div>
-<button onclick="run()">ANALYZE</button>
-</div>
-
-<div id="status" class="res gray">WAITING</div>
 
 <div class="card">
-<div>ENTRY: <span id="ep">-</span> <button class="copy" onclick="cp('ep')">Copy</button></div>
-<div>SL: <span id="sl">-</span> <button class="copy" onclick="cp('sl')">Copy</button></div>
-<div>TP: <span id="tp">-</span> <button class="copy" onclick="cp('tp')">Copy</button></div>
+    <div class="ai-chat-box">
+        <h3>🤖 GIP REAL GUIDE (LOCKED)</h3>
+        <p id="aiGuideText">Waiting for data injection...</p>
+    </div>
+</div>
+
+<div class="card">
+    <h2>🎯 MISSION TARGETS</h2>
+    <div class="mission-grid">
+        <div id="missionH1" class="m-box m-h1">H1: -</div>
+        <div id="missionM30" class="m-box m-m30">M30: -</div>
+        <div id="missionM15" class="m-box m-m15">M15: -</div>
+        <div id="missionM5" class="m-box m-m5">M5: -</div>
+    </div>
+</div>
+
+<div class="card">
+    <h2>📊 ENGINE STATUS</h2>
+    <div id="finalStatus" class="status big gray">IDLE</div>
+    <div id="subStatus" class="status gray" style="font-size:12px;">Waiting for calculation...</div>
+</div>
+
+<div class="card">
+    <h2>🛡 RISK ENGINE (30% SNIPER)</h2>
+    <div class="risk-box">
+        <div>ENTRY : <span id="out-entry" style="color:#79c0ff">-</span></div>
+        <div>SL    : <span id="out-sl" style="color:#f85149">-</span></div>
+        <div>TP    : <span id="out-tp" style="color:#3fb950">-</span></div>
+    </div>
+</div>
+
+<div class="card">
+    <h2>📝 LOG</h2>
+    <div id="log" class="log"></div>
 </div>
 
 <script>
-let lv=null;
+let levels=null, inst=null, logData=[];
 
-function lock(){
-let ids=['h1h','h1l','m30h','m30l','m15h','m15l'];
-let v=ids.map(id=>parseFloat(document.getElementById(id).value));
-if(v.some(isNaN)) return alert("Structure belum lengkap");
-lv={H1:{h:v[0],l:v[1]},M30:{h:v[2],l:v[3]},M15:{h:v[4],l:v[5]}};
-alert("CORE LOCKED");
+function lockSystem(){
+    levels={
+        H1:{h:parseFloat(h1h.value),l:parseFloat(h1l.value)},
+        M30:{h:parseFloat(m30h.value),l:parseFloat(m30l.value)},
+        M15:{h:parseFloat(m15h.value),l:parseFloat(m15l.value)}
+    };
+    inst={
+        H4:{h:parseFloat(h4h.value),l:parseFloat(h4l.value)},
+        H2:{h:parseFloat(h2h.value),l:parseFloat(h2l.value)}
+    };
+    if(Object.values(levels).some(v=>isNaN(v.h)||isNaN(v.l))) return alert("Fill Levels!");
+    alert("SYSTEM LOCKED. DISCIPLINE MODE ON.");
 }
 
-function cp(id){
-let val=document.getElementById(id).innerText;
-if(val!="-") navigator.clipboard.writeText(val);
-}
+function processEngine(){
+    if(!levels) return alert("Lock Core First!");
+    let d=[]; for(let i=1;i<=12;i++){ let v=parseFloat(document.getElementById("m5_"+i).value); if(!isNaN(v)) d.push(v); }
+    
+    // FIX AUDIT: Ensure prev2 (index length-3) exists
+    if(d.length < 12) return alert("Need full 12 M5 candles for accurate pressure analysis.");
 
-function run(){
-if(!lv) return;
-let arr=[];
-for(let i=1;i<=12;i++){
-let id=i==5?"m5_5":"m"+i;
-let val=parseFloat(document.getElementById(id).value);
-if(!isNaN(val)) arr.push(val);
-}
-if(arr.length<12) return;
+    let price=d[11], prev=d[10], prev2=d[9];
+    
+    function getS(tf){
+        let h=levels[tf].h, l=levels[tf].l;
+        if(prev>h && price>h) return "BUY";
+        if(prev<l && price<l) return "SELL";
+        return "WAIT";
+    }
 
-let price=arr[11],prev=arr[10],prev2=arr[9];
+    let h1=getS("H1"), m15=getS("M15");
+    let pressure=0, side=null;
+    for(let i=11;i>=0;i--){
+        if(d[i]>levels.M15.h){ if(side==="SELL")break; side="BUY"; pressure++; }
+        else if(d[i]<levels.M15.l){ if(side==="BUY")break; side="SELL"; pressure++; }
+        else break;
+    }
 
-let h2h=parseFloat(document.getElementById("h2h").value);
-let h2l=parseFloat(document.getElementById("h2l").value);
-if(!isNaN(h2h)&&!isNaN(h2l)&&price>h2l&&price<h2h){
-document.getElementById("status").className="res gray";
-document.getElementById("status").innerText="H2 BLOCK";
-return;
-}
+    let h1Valid = (h1==="BUY" && prev2>levels.H1.h && price>levels.H1.h) || (h1==="SELL" && prev2<levels.H1.l && price<levels.H1.l);
+    let primaryBias = h1;
+    let mode = (primaryBias!=="WAIT" && pressure>=3 && h1Valid) ? "GOLDEN" : (primaryBias!=="WAIT" && pressure>=2) ? "SCALP" : "WAIT";
 
-let getB=(l)=> (price>l.h&&prev>l.h)?"BUY":(price<l.l&&prev<l.l)?"SELL":"WAIT";
-let h1B=getB(lv.H1),m30B=getB(lv.M30);
-let bias=(h1B!=="WAIT"&&(m30B===h1B||m30B==="WAIT"))?h1B:"WAIT";
+    // H2 HARD BLOCK
+    let h2Blocked = false;
+    if(!isNaN(inst.H2.h) && price > inst.H2.l && price < inst.H2.h){
+        primaryBias="WAIT"; mode="WAIT"; h2Blocked=true;
+    }
 
-let pressure=0,side=null;
-for(let i=arr.length-1;i>=0;i--){
-if(arr[i]>lv.M15.h){if(side==="SELL")break;side="BUY";pressure++;}
-else if(arr[i]<lv.M15.l){if(side==="BUY")break;side="SELL";pressure++;}
-else break;
-}
+    // H4 EXTREME
+    let h4Extreme = false;
+    if(!isNaN(inst.H4.h)){
+        let r=inst.H4.h-inst.H4.l;
+        let pos=(price-inst.H4.l)/r;
+        if((primaryBias==="BUY" && pos>0.85)||(primaryBias==="SELL" && pos<0.15)){
+            h4Extreme=true; mode="SCALP";
+        }
+    }
 
-let validBreak=(h1B==="BUY"&&prev2>lv.H1.h&&price>lv.H1.h)||(h1B==="SELL"&&prev2<lv.H1.l&&price<lv.H1.l);
+    // SNIPER 30%
+    let hi=Math.max(...d.slice(-3)), lo=Math.min(...d.slice(-3));
+    let sniperEntry = primaryBias==="BUY" ? lo+((hi-lo)*0.3) : hi-((hi-lo)*0.3);
+    let entryTouched = (primaryBias==="BUY" && price<=sniperEntry) || (primaryBias==="SELL" && price>=sniperEntry);
+    if(!entryTouched && primaryBias!=="WAIT") mode="WAIT_PULLBACK";
 
-let gear="WAIT";
-if(validBreak&&bias!=="WAIT"){
-if(pressure>=3) gear="GOLDEN";
-else if(pressure>=2) gear="SCALP";
-}
+    // ADAPTIVE RISK
+    let sl=0, tp=0;
+    if(primaryBias!=="WAIT"){
+        sl = (mode==="GOLDEN") ? (primaryBias==="BUY"?levels.H1.l:levels.H1.h) : (primaryBias==="BUY"?levels.M15.l:levels.M15.h);
+        if(mode==="WAIT_PULLBACK") tp = NaN;
+        else if(mode==="SCALP") tp = primaryBias==="BUY" ? sniperEntry+(Math.abs(sniperEntry-sl)*1.5) : sniperEntry-(Math.abs(sniperEntry-sl)*1.5);
+        else tp = primaryBias==="BUY" ? levels.H1.h+((levels.H1.h-levels.H1.l)*0.618) : levels.H1.l-((levels.H1.h-levels.H1.l)*0.618);
+    }
 
-let h4h=parseFloat(document.getElementById("h4h").value);
-let h4l=parseFloat(document.getElementById("h4l").value);
-if(!isNaN(h4h)&&!isNaN(h4l)){
-let pos=(price-h4l)/(h4h-h4l);
-if((bias==="BUY"&&pos>0.85)||(bias==="SELL"&&pos<0.15)){
-gear="SCALP";
-}
-}
+    // AI CHAT
+    let chat="";
+    if(h2Blocked) chat="HARGA DI ZONA H2. Konsolidasi besar. Bias dimatikan untuk keamanan modal.";
+    else if(mode==="WAIT_PULLBACK") chat="Bias "+primaryBias+" valid, tapi harga masih PREMIUM. Tunggu diskon di "+sniperEntry.toFixed(5)+".";
+    else if(mode==="SCALP") chat=h4Extreme ? "SCALP MODE: Harga di ujung H4. Ambil TP cepat (RR 1.5)." : "SCALP MODE: Momentum cukup untuk ekspansi mikro.";
+    else if(mode==="GOLDEN") chat="GOLDEN MOMENT: H1 Break Valid + High Pressure. Target Mission H1.";
+    else chat="Market netral. Menunggu breakout H1.";
 
-if(gear==="WAIT"){
-document.getElementById("status").className="res gray";
-document.getElementById("status").innerText="WAIT";
-return;
-}
+    // UI UPDATE
+    document.getElementById("aiGuideText").innerText = chat;
+    document.getElementById("out-entry").innerText = sniperEntry.toFixed(5);
+    document.getElementById("out-sl").innerText = sl===0?"-":sl.toFixed(5);
+    document.getElementById("out-tp").innerText = (isNaN(tp)||tp===0)?"- (Focus on Entry)":tp.toFixed(5);
+    
+    let fS=document.getElementById("finalStatus");
+    fS.innerText = mode==="WAIT_PULLBACK" ? "WAIT PULLBACK" : (primaryBias==="WAIT"?"WAITING":mode+" "+primaryBias);
+    fS.className = "status big "+(primaryBias==="BUY"?"green":primaryBias==="SELL"?"red":"gray");
+    document.getElementById("subStatus").innerText = "Pressure: "+pressure+" | H1 Valid: "+h1Valid;
 
-let hi=Math.max(...arr.slice(-3)),lo=Math.min(...arr.slice(-3));
-let ep=bias==="BUY"?lo+(hi-lo)*0.3:hi-(hi-lo)*0.3;
-let sl=gear==="GOLDEN"?(bias==="BUY"?lv.H1.l:lv.H1.h):(bias==="BUY"?lv.M15.l:lv.M15.h);
-let tp=bias==="BUY"?ep+(Math.abs(ep-sl)*2):ep-(Math.abs(ep-sl)*2);
-
-document.getElementById("ep").innerText=ep.toFixed(5);
-document.getElementById("sl").innerText=sl.toFixed(5);
-document.getElementById("tp").innerText=tp.toFixed(5);
-
-let touched=(bias==="BUY"&&price<=ep)||(bias==="SELL"&&price>=ep);
-
-if(touched){
-document.getElementById("status").className=bias==="BUY"?"res green":"res red";
-document.getElementById("status").innerText=gear+" "+bias+" VALID";
-}else{
-document.getElementById("status").className="res yellow";
-document.getElementById("status").innerText="WAIT PULLBACK ("+gear+")";
-}
+    // MISSION
+    let rH1=levels.H1.h-levels.H1.l;
+    document.getElementById("missionH1").innerText="H1: "+(primaryBias==="BUY"?(levels.H1.h+(rH1*0.618)).toFixed(5):primaryBias==="SELL"?(levels.H1.l-(rH1*0.618)).toFixed(5):"-");
+    
+    let t=new Date().toLocaleTimeString();
+    logData.push(`[${t}] ${mode} ${primaryBias} | P: ${price.toFixed(5)}`);
+    document.getElementById("log").innerText = logData.slice(-30).join("\n");
 }
 </script>
-
 </body>
 </html>
