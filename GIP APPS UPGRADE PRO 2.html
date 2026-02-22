@@ -1,0 +1,188 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GIP V5 - Made by : Mbah Pri · THE FINAL SNIPER</title>
+    <style>
+        :root { --bg: #030508; --card-bg: linear-gradient(165deg, #0d121f, #05080f); --border: #1f2940; --cyan: #00eaff; --green: #00ff99; --red: #ff4d4d; --yellow: #ffcc00; }
+        body { margin:0; font-family:'Segoe UI', sans-serif; background: var(--bg); color:#fff; padding:15px; font-size: 14px; }
+        .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 15px; margin-bottom: 15px; }
+        h2 { margin: 0 0 15px 0; color: var(--cyan); text-transform: uppercase; font-size: 11px; letter-spacing: 2px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+        .tag { font-size: 9px; color: #555; text-transform: uppercase; margin-bottom: 4px; display: block; font-weight: bold; }
+        input { width: 100%; padding: 10px; margin: 5px 0; background: #000; border: 1px solid var(--border); color: var(--cyan); border-radius: 6px; outline: none; font-family: monospace; box-sizing: border-box; }
+        button { width: 100%; padding: 14px; margin-top: 10px; border-radius: 6px; font-weight: bold; background: var(--cyan); border: none; color: #000; cursor: pointer; text-transform: uppercase; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .status { padding: 15px; border-radius: 8px; text-align: center; font-weight: 900; margin: 10px 0; letter-spacing: 1px; }
+        .big { font-size: 20px; }
+        .green { color: var(--green); background: rgba(0,255,153,0.1); border: 1px solid var(--green); }
+        .red { color: var(--red); background: rgba(255,77,77,0.1); border: 1px solid var(--red); }
+        .yellow { color: var(--yellow); background: rgba(255,204,0,0.1); border: 1px solid var(--yellow); }
+        .gray { color: #aaa; background: rgba(255,255,255,0.05); border: 1px solid #333; }
+        .deepBox { background: rgba(0,234,255,0.02); border: 1px solid var(--border); padding: 12px; border-radius: 8px; margin-top: 10px; }
+        .m-box { padding: 8px; border-radius: 4px; font-weight: bold; font-size: 10px; text-align: center; border: 1px solid rgba(255,255,255,0.05); }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <span class="tag">System Integrity</span>
+    <h2>🔒 CORE STRUCTURE</h2>
+    <div class="grid">
+        <input type="number" id="h1h" step="any" placeholder="H1 High"><input type="number" id="h1l" step="any" placeholder="H1 Low">
+        <input type="number" id="m30h" step="any" placeholder="M30 High"><input type="number" id="m30l" step="any" placeholder="M30 Low">
+        <input type="number" id="m15h" step="any" placeholder="M15 High"><input type="number" id="m15l" step="any" placeholder="M15 Low">
+    </div>
+    <button onclick="lockLevels()">LOCKED CORE INITIALIZATION</button>
+</div>
+
+<div class="card">
+    <span class="tag">Data Stream</span>
+    <h2>📥 M5 SEQUENCE (L12)</h2>
+    <div style="display:grid; grid-template-columns: repeat(4,1fr); gap:6px;">
+        <input type="number" id="m5_1" step="any"><input type="number" id="m5_2" step="any"><input type="number" id="m5_3" step="any"><input type="number" id="m5_4" step="any">
+        <input type="number" id="m5_5" step="any"><input type="number" id="m5_6" step="any"><input type="number" id="m5_7" step="any"><input type="number" id="m5_8" step="any">
+        <input type="number" id="m5_9" step="any"><input type="number" id="m5_10" step="any"><input type="number" id="m5_11" step="any"><input type="number" id="m5_12" step="any">
+    </div>
+    <input type="number" id="h4h" step="any" placeholder="H4 High (Optional)"><input type="number" id="h4l" step="any" placeholder="H4 Low (Optional)">
+    <input type="number" id="h2h" step="any" placeholder="H2 High (Block)"><input type="number" id="h2l" step="any" placeholder="H2 Low (Block)">
+    <button onclick="processEngine()">FIRE SNIPER</button>
+</div>
+
+<div class="card">
+    <span class="tag">Real-Time Command</span>
+    <h2 id="gearDisplay">GEAR: NEUTRAL</h2>
+    <div id="finalStatus" class="status big gray">IDLE</div>
+    <div id="alertZone" class="status yellow" style="display:none; font-size:11px;">🛡️ PENDING: WAITING PULLBACK</div>
+</div>
+
+<div class="card">
+    <span class="tag">Execution Audit</span>
+    <div class="grid">
+        <div><span class="tag">RR Target</span><input type="number" id="rrInput" value="2.0" step="0.1"></div>
+        <div id="shieldStatus" class="m-box" style="margin-top:16px; border-color:var(--cyan);">SHIELD: STANDBY</div>
+    </div>
+    <div class="deepBox">
+        <div id="entry" style="font-size:14px; color:var(--cyan); font-weight:bold; font-family:monospace;">LIMIT ZONE: -</div>
+        <div id="sl" style="font-size:12px; color:var(--red); font-family:monospace; margin-top:5px;">STOP LOSS: -</div>
+        <div id="tp" style="font-size:12px; color:var(--green); font-family:monospace;">TAKE PROFIT: -</div>
+    </div>
+</div>
+
+<div class="card">
+    <span class="tag">Mission Status</span>
+    <div class="grid">
+        <div id="missionH1" class="m-box" style="background:#9b59b6;">H1: -</div>
+        <div id="missionM30" class="m-box" style="background:#0000FF;">M30: -</div>
+        <div id="missionM15" class="m-box" style="background:#FFFF00; color:#000;">M15: -</div>
+        <div id="missionM5" class="m-box" style="background:#00FF00; color:#000;">M5: -</div>
+    </div>
+</div>
+
+<script>
+let levels = null;
+let lastEntryTime = 0;
+
+function lockLevels() {
+    const vals = ['h1h','h1l','m30h','m30l','m15h','m15l'].map(id => parseFloat(document.getElementById(id).value));
+    // 🔥 FIX 1: Correct NaN Validation
+    if(vals.some(v => isNaN(v))) return alert("CRITICAL: All structure levels must be filled!");
+    levels = { H1: {high: vals[0], low: vals[1]}, M30: {high: vals[2], low: vals[3]}, M15: {high: vals[4], low: vals[5]} };
+    alert("SYSTEM LOCKED. No further changes allowed.");
+}
+
+function getIdealEntry(arr, bias) {
+    let lookback = 3;
+    let hi = Math.max(...arr.slice(-lookback)), lo = Math.min(...arr.slice(-lookback));
+    return bias === "BUY" ? lo + ((hi - lo) * 0.3) : hi - ((hi - lo) * 0.3);
+}
+
+function getMicroSwing(arr, bias) {
+    let lookback = 4;
+    return bias === "BUY" ? Math.min(...arr.slice(-lookback)) : Math.max(...arr.slice(-lookback));
+}
+
+function processEngine() {
+    if(!levels) return;
+    let arr = [];
+    for(let i=1; i<=12; i++) {
+        let v = parseFloat(document.getElementById("m5_"+i).value);
+        if(!isNaN(v)) arr.push(v);
+    }
+    if(arr.length < 12) return;
+
+    const price = arr[arr.length-1], prev = arr[arr.length-2], prev2 = arr[arr.length-3];
+    const statusEl = document.getElementById("finalStatus"), alertEl = document.getElementById("alertZone");
+
+    // VOLATILITY & EXTREME
+    let sAvg = (arr.slice(-6, -1).reduce((a, b, i, x) => a + Math.abs(b - x[i-1] || 0), 0) / 5) || 0.000001;
+    let mAvg = (arr.slice(-11, -1).reduce((a, b, i, x) => a + Math.abs(b - x[i-1] || 0), 0) / 10) || 0.000001;
+    
+    const h4h = parseFloat(document.getElementById("h4h").value), h4l = parseFloat(document.getElementById("h4l").value);
+    let h4Pos = 0.5, dynamicExtreme = 0.85;
+    if(!isNaN(h4h) && !isNaN(h4l) && h4h !== h4l) {
+        h4Pos = (price - h4l) / (h4h - h4l);
+        // 🔥 FIX 3: Clamped Extreme
+        dynamicExtreme = Math.max(0.6, Math.min(0.95, 1 - (sAvg / (h4h - h4l))));
+    }
+    const inH2 = (price > parseFloat(document.getElementById("h2l").value) && price < parseFloat(document.getElementById("h2h").value));
+
+    // BIAS & PRESSURE
+    const checkB = (tf) => (price > levels[tf].high && prev > levels[tf].high) ? "BUY" : (price < levels[tf].low && prev < levels[tf].low) ? "SELL" : "WAIT";
+    let h1Bias = checkB("H1"), m30Bias = checkB("M30"), pBias = (h1Bias !== "WAIT" && (m30Bias === h1Bias || m30Bias === "WAIT")) ? h1Bias : "WAIT";
+    
+    let pressure = 0, side = null;
+    for(let i=arr.length-1; i>=0; i--) {
+        if(arr[i] > levels.M15.high) { if(side==="SELL") break; side="BUY"; pressure++; }
+        else if(arr[i] < levels.M15.low) { if(side==="BUY") break; side="SELL"; pressure++; }
+        else break;
+    }
+
+    // GEAR & 🔥 FIX 2: H1 BREAK INTEGRITY
+    let gear = "WAIT";
+    let h1BreakValid = (h1Bias==="BUY" && prev2>levels.H1.high && price>levels.H1.high) || (h1Bias==="SELL" && prev2<levels.H1.low && price<levels.H1.low);
+    
+    if(!inH2 && (Date.now() - lastEntryTime > 300000) && pBias !== "WAIT") {
+        if(h1BreakValid && pressure >= 3) {
+            gear = "GOLDEN";
+            if((pBias==="BUY" && h4Pos > dynamicExtreme) || (pBias==="SELL" && h4Pos < (1-dynamicExtreme))) gear = "SCALP";
+        } else if(pressure >= 2) gear = "SCALP";
+    }
+
+    // SNIPER EXECUTION
+    if(gear !== "WAIT") {
+        const ePrice = getIdealEntry(arr, pBias);
+        const touched = (pBias === "BUY" && price <= ePrice) || (pBias === "SELL" && price >= ePrice);
+        const sl = (sAvg/mAvg < 0.8 && ((pBias==="BUY" && h4Pos > dynamicExtreme+0.03) || (pBias==="SELL" && h4Pos < (1-(dynamicExtreme+0.03))))) ? getMicroSwing(arr, pBias) : (gear==="GOLDEN" ? (pBias==="BUY"?levels.H1.low:levels.H1.high) : (pBias==="BUY"?levels.M15.low:levels.M15.high));
+        const tp = pBias === "BUY" ? ePrice + (Math.abs(ePrice-sl)*parseFloat(document.getElementById("rrInput").value)) : ePrice - (Math.abs(ePrice-sl)*parseFloat(document.getElementById("rrInput").value));
+
+        document.getElementById("entry").innerText = "SNIPER ZONE: " + ePrice.toFixed(5);
+        document.getElementById("sl").innerText = "STOP LOSS: " + sl.toFixed(5);
+        document.getElementById("tp").innerText = "TAKE PROFIT: " + tp.toFixed(5);
+        document.getElementById("gearDisplay").innerText = "GEAR: " + gear;
+
+        if(touched) {
+            statusEl.innerText = gear + " " + pBias + " (ENTRY VALID)";
+            statusEl.className = "status big " + (pBias==="BUY"?"green":"red");
+            alertEl.style.display = "none";
+            lastEntryTime = Date.now();
+        } else {
+            statusEl.innerText = "WAIT PULLBACK (" + gear + ")";
+            statusEl.className = "status big yellow";
+            alertEl.style.display = "block";
+        }
+    } else {
+        statusEl.innerText = inH2 ? "H2 BLOCK" : "WAITING SETUP";
+        statusEl.className = "status big gray";
+        alertEl.style.display = "none";
+    }
+    // MISSION DNA
+    const getM = (tf, sig) => { let r = levels[tf].high - levels[tf].low; return sig === "BUY" ? (levels[tf].high + r*0.618).toFixed(5) : sig === "SELL" ? (levels[tf].low - r*0.618).toFixed(5) : "-"; };
+    document.getElementById("missionH1").innerText = "H1: " + getM("H1", h1Bias);
+    document.getElementById("missionM30").innerText = "M30: " + getM("M30", m30Bias);
+    document.getElementById("missionM15").innerText = "M15: " + getM("M15", (price > levels.M15.high ? "BUY" : price < levels.M15.low ? "SELL" : "WAIT"));
+    document.getElementById("missionM5").innerText = "M5: " + (price > prev ? (price*1.0005).toFixed(5) : (price*0.9995).toFixed(5));
+}
+</script>
+</body>
+</html>
