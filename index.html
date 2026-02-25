@@ -3,197 +3,532 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GIP V5 · IMMORTAL LOCKED</title>
+<title>GIP V5 · SOVEREIGN ENGINE</title>
+
 <style>
-body{margin:0;font-family:Arial;background:#030508;color:#e6edf3;padding:15px;}
-.card{background:#0d1117;border:1px solid #30363d;border-radius:12px;padding:15px;margin-bottom:15px;}
-h2{margin:0 0 10px 0;color:#58a6ff;font-size:16px;text-transform:uppercase;letter-spacing:1px;}
-input{width:100%;padding:10px;margin:5px 0;background:#010409;border:1px solid #30363d;color:#79c0ff;border-radius:6px;font-family:monospace;}
-input:focus{border-color:#58a6ff;outline:none;}
-button{width:100%;padding:12px;margin-top:10px;border-radius:6px;font-weight:bold;background:#238636;border:none;color:#fff;cursor:pointer;}
-button:hover{background:#2ea043;}
-.status{padding:10px;margin:5px 0;border-radius:6px;text-align:center;font-weight:bold;text-transform:uppercase;}
-.green{color:#3fb950; border: 1px solid #238636; background: rgba(35,134,54,0.1);}
-.red{color:#f85149; border: 1px solid #da3633; background: rgba(218,54,51,0.1);}
-.yellow{color:#d29922; border: 1px solid #9e6a03; background: rgba(158,106,3,0.1);}
-.gray{color:#8b949e; border: 1px solid #30363d;}
-.big{font-size:22px;}
-.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
-.mission-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;}
-.m-box{padding:12px;border-radius:8px;text-align:center;font-weight:900;font-size:12px;border:1px solid rgba(255,255,255,0.1);}
-.m-h1{background:#8957e5; color:#fff;} .m-m30{background:#1f6feb; color:#fff;}
-.m-m15{background:#d29922; color:#000;} .m-m5{background:#238636; color:#fff;}
-.ai-chat-box{background:rgba(88,166,255,0.1); border:1px dashed #58a6ff; border-radius:10px; padding:15px; margin-top:10px;}
-.ai-chat-box h3{margin:0 0 5px 0; font-size:13px; color:#58a6ff;}
-.ai-chat-box p{margin:0; font-size:13px; font-style:italic; line-height:1.4;}
-.risk-box{font-family:monospace; font-size:13px; color:#c9d1d9; line-height:1.8;}
-.log{background:#010409; padding:10px; border-radius:8px; font-family:monospace; font-size:11px; height:100px; overflow-y:auto; color:#8b949e; border:1px solid #30363d;}
+body{margin:0;font-family:Arial;background:#0b0f18;color:#fff;padding:15px;}
+.card{background:#141a2a;border:1px solid #1f2940;border-radius:12px;padding:15px;margin-bottom:15px;}
+h2{margin-top:0;color:#00eaff;}
+input{width:100%;padding:8px;margin:4px 0;background:#000;border:1px solid #00eaff;color:#0ff;border-radius:6px;}
+button{width:100%;padding:10px;margin-top:6px;border-radius:6px;font-weight:bold;background:#101828;border:1px solid #00eaff;color:#0ff;cursor:pointer;}
+.status{padding:8px;margin:5px 0;border-radius:6px;text-align:center;}
+.green{color:#00ff99;}
+.red{color:#ff4d4d;}
+.yellow{color:#ffcc00;}
+.gray{color:#aaa;}
+.big{font-size:20px;font-weight:bold;}
+.bar{height:8px;background:#222;border-radius:5px;overflow:hidden;margin-top:5px;}
+.fill{height:100%;background:linear-gradient(90deg,#ff4d4d,#ffcc00,#00ff99);width:0%;}
+.small{font-size:12px;color:#aaa;margin-top:5px;white-space:pre-line;}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;}
+.log{background:#0a0e14;padding:8px;border-radius:6px;font-family:monospace;font-size:11px;height:120px;overflow-y:auto;color:#0ff;}
+.deepBox{background:#101826;border:1px solid #23304a;padding:10px;border-radius:8px;margin-top:6px;}
+
+/* MISSION PRICE STYLES */
+.mission-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+.m-box { padding: 10px; border-radius: 6px; font-weight: bold; font-size: 13px; text-align: center; border: 1px solid rgba(255,255,255,0.1); }
+.m-h1 { background: #9b59b6; color: #fff; border-left: 5px solid #fff; } 
+.m-m30 { background: #2980b9; color: #fff; border-left: 5px solid #fff; } 
+.m-m15 { background: #f1c40f; color: #000; border-left: 5px solid #000; } 
+.m-m5 { background: #2ecc71; color: #000; border-left: 5px solid #000; } 
+
+.input-layer { background: #1a2235; border: 2px solid #00eaff; padding: 12px; border-radius: 8px; margin-bottom: 15px; }
+.layer-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+.btn-add { background: #00eaff !important; color: #000 !important; }
+
+/* MODULAR UI */
+.clock-display { font-size: 24px; color: #ffcc00; text-align: center; font-weight: bold; margin-bottom: 10px; }
+.news-alert-box { border: 1px dashed #ff4d4d; padding: 10px; border-radius: 8px; margin-bottom: 15px; }
 </style>
 </head>
 <body>
 
 <div class="card">
-    <h2>🔒 STRUCTURE CORE</h2>
-    <div class="grid">
-        <input type="number" id="h1h" placeholder="H1 H"><input type="number" id="h1l" placeholder="H1 L">
-        <input type="number" id="m30h" placeholder="M30 H"><input type="number" id="m30l" placeholder="M30 L">
-        <input type="number" id="m15h" placeholder="M15 H"><input type="number" id="m15l" placeholder="M15 L">
-        <input type="number" id="h4h" placeholder="H4 H"><input type="number" id="h4l" placeholder="H4 L">
-        <input type="number" id="h2h" placeholder="H2 H"><input type="number" id="h2l" placeholder="H2 L">
+    <div id="mt5Clock" class="clock-display">00:00:00 (LOADING...)</div>
+    
+    <div id="h1CloseWarning" 
+         style="display:none;
+                background:#4d0000;
+                border:2px solid #ff0000;
+                color:#ff4d4d;
+                padding:12px;
+                border-radius:8px;
+                margin-bottom:15px;
+                text-align:center;
+                font-weight:bold;">
+    ⚠ H1 CLOSING ZONE ACTIVE<br>
+    5–10 menit terakhir sebelum H1 close.<br>
+    Zona manipulasi / liquidity sweep.<br>
+    Hindari entry agresif.
     </div>
-    <button onclick="lockSystem()">INITIALIZE SYSTEM</button>
-</div>
-
-<div class="card">
-    <h2>📥 M5 DATA FEED</h2>
-    <div class="grid">
-        <input type="number" id="m5_1"><input type="number" id="m5_2"><input type="number" id="m5_3"><input type="number" id="m5_4">
-        <input type="number" id="m5_5"><input type="number" id="m5_6"><input type="number" id="m5_7"><input type="number" id="m5_8">
-        <input type="number" id="m5_9"><input type="number" id="m5_10"><input type="number" id="m5_11"><input type="number" id="m5_12">
-    </div>
-    <button style="background:#1f6feb" onclick="processEngine()">ANALYZE MARKET</button>
-</div>
-
-<div class="card">
-    <div class="ai-chat-box">
-        <h3>🤖 GIP REAL GUIDE (LOCKED)</h3>
-        <p id="aiGuideText">Waiting for data injection...</p>
-    </div>
-</div>
-
-<div class="card">
-    <h2>🎯 MISSION TARGETS</h2>
-    <div class="mission-grid">
-        <div id="missionH1" class="m-box m-h1">H1: -</div>
-        <div id="missionM30" class="m-box m-m30">M30: -</div>
-        <div id="missionM15" class="m-box m-m15">M15: -</div>
-        <div id="missionM5" class="m-box m-m5">M5: -</div>
+    <div class="news-alert-box">
+        <h3 style="margin:0 0 5px 0; font-size:14px; color:#ff4d4d;">🔔 MANUAL NEWS ALERT</h3>
+        <div style="display:flex; gap:5px;">
+            <input type="time" id="newsTime" style="flex:1;">
+            <input type="text" id="newsTitle" placeholder="Event Name" style="flex:2;">
+            <button onclick="setNewsAlert()" style="width: auto; margin:0; padding: 5px 15px;">SET</button>
+        </div>
+        <div id="activeAlerts" class="small yellow" style="margin-top:5px;"></div>
     </div>
 </div>
 
-<div class="card">
-    <h2>📊 ENGINE STATUS</h2>
-    <div id="finalStatus" class="status big gray">IDLE</div>
-    <div id="subStatus" class="status gray" style="font-size:12px;">Waiting for calculation...</div>
-</div>
-
-<div class="card">
-    <h2>🛡 RISK ENGINE (30% SNIPER)</h2>
-    <div class="risk-box">
-        <div>ENTRY : <span id="out-entry" style="color:#79c0ff">-</span></div>
-        <div>SL    : <span id="out-sl" style="color:#f85149">-</span></div>
-        <div>TP    : <span id="out-tp" style="color:#3fb950">-</span></div>
+<div class="card input-layer">
+    <h2>🕯️ LIVE M5 CANDLE INPUT</h2>
+    <div class="layer-grid">
+        <div>High <input type="number" id="m5_high" step="0.001"></div>
+        <div>Low <input type="number" id="m5_low" step="0.001"></div>
+        <div>Close <input type="number" id="m5_close" step="0.001"></div>
     </div>
+    <button class="btn-add" onclick="addM5Candle()">ADD CANDLE & UPDATE STRUCTURE</button>
 </div>
 
 <div class="card">
-    <h2>📝 LOG</h2>
-    <div id="log" class="log"></div>
+<h2>🔒 LOCK STRUCTURE (1x per H1)</h2>
+H1 High <input type="number" id="h1h">
+H1 Low <input type="number" id="h1l">
+M30 High <input type="number" id="m30h">
+M30 Low <input type="number" id="m30l">
+M15 High <input type="number" id="m15h">
+M15 Low <input type="number" id="m15l">
+<button onclick="lockLevels()">LOCK STRUCTURE</button>
+<button onclick="resetStructureOnly()" style="background:#4d331a; margin-top:5px;">🗑 RESET STRUCTURE</button>
+<div id="lockInfo" class="small"></div>
+</div>
+
+<div class="card">
+<h2>🏦 H2 / H4 FILTER</h2>
+H4 High <input type="number" id="h4h">
+H4 Low <input type="number" id="h4l">
+H2 High <input type="number" id="h2h">
+H2 Low <input type="number" id="h2l">
+<button onclick="setInstitutional()">SET FILTER</button>
+<button onclick="resetFilterOnly()" style="background:#4d331a; margin-top:5px;">🗑 RESET FILTER</button>
+<div id="institutionInfo" class="small"></div>
+</div>
+
+<div class="card">
+<h2>📥 M5 MEMORY (12 SLOT)</h2>
+<div class="grid">
+<input type="number" id="m5_1"><input type="number" id="m5_2"><input type="number" id="m5_3">
+<input type="number" id="m5_4"><input type="number" id="m5_5"><input type="number" id="m5_6">
+<input type="number" id="m5_7"><input type="number" id="m5_8"><input type="number" id="m5_9">
+<input type="number" id="m5_10"><input type="number" id="m5_11"><input type="number" id="m5_12">
+</div>
+<button onclick="processEngine()">PROCESS ENGINE</button>
+<button onclick="resetM5Only()" style="background:#4d331a; margin-top:5px;">🗑 RESET M5 MEMORY</button>
+</div>
+
+<div class="card">
+<h2>🎯 DYNAMIC MISSION PRICES</h2>
+<div class="mission-grid">
+    <div id="missionH1" class="m-box m-h1">H1 Target: -</div>
+    <div id="missionM30" class="m-box m-m30">M30 Target: -</div>
+    <div id="missionM15" class="m-box m-m15">M15 Target: -</div>
+    <div id="missionM5" class="m-box m-m5">M5 Target: -</div>
+</div>
+</div>
+
+<div class="card">
+<h2>📊 ENGINE STATUS</h2>
+<div id="h1Status" class="status gray">H1: WAIT</div>
+<div id="m30Status" class="status gray">M30: WAIT</div>
+<div id="m15Status" class="status gray">M15: WAIT</div>
+<div id="m5Status" class="status gray">M5: WAIT</div>
+<div id="flowStatus" class="status gray">FLOW: -</div>
+<div id="pressureStatus" class="status gray">PRESSURE: 0</div>
+<div id="finalStatus" class="status big gray">FINAL: -</div>
+<div class="bar"><div id="confidenceBar" class="fill"></div></div>
+</div>
+
+<div class="card">
+<h2>🧠 DEEP ENGINE INTERPRETATION</h2>
+<div class="deepBox" id="deepConclusion" style="white-space: pre-wrap;"></div>
+</div>
+
+<div class="card">
+<h2>🛡 RISK ENGINE</h2>
+RR <input type="number" id="rrInput" value="2" step="0.1">
+<div id="entry" class="small"></div>
+<div id="sl" class="small"></div>
+<div id="tp" class="small"></div>
+</div>
+
+<div class="card">
+<h2>📝 GOLDEN LOG</h2>
+<div id="log" class="log"></div>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;margin-top:10px;">
+    <button onclick="exportData()" style="background:#1a4d1a;">📥 EXPORT</button>
+    <button onclick="importData()" style="background:#1a2b4d;">📤 IMPORT</button>
+    <button onclick="resetSystem()" style="background:#4d1a1a;">🗑 RESET TOTAL</button>
+</div>
 </div>
 
 <script>
-let levels=null, inst=null, logData=[];
+// --- GLOBAL MEMORY ---
+let m5Memory = [];
+let levels = null;
+let institutional = null;
+let lockedHour = null;
+let logData = [];
+let activeNewsAlerts = [];
 
-function lockSystem(){
+// === MT5 CLOCK LOGIC ===
+let MT5_OFFSET_HOURS = 0; 
+
+function getMT5Time() {
+    const now = new Date();
+    const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+    return new Date(utc + (MT5_OFFSET_HOURS * 3600000));
+}
+
+function startMT5Clock() {
+    setInterval(() => {
+        const mt5 = getMT5Time();
+        const h = String(mt5.getHours()).padStart(2, '0');
+        const m = String(mt5.getMinutes()).padStart(2, '0');
+        const s = String(mt5.getSeconds()).padStart(2, '0');
+        const clockStr = `${h}:${m}:${s}`;
+        document.getElementById("mt5Clock").innerText = clockStr + " (MT5 SERVER)";
+        checkNewsAlerts(clockStr);
+        checkH1ClosingZone(mt5); // PATCH: Penambahan trigger warning zona penutupan H1
+    }, 1000);
+}
+
+// PATCH: FUNCTION TERPISAH UNTUK WARNING ZONA H1 (TIDAK MODIFIKASI ENGINE)
+function checkH1ClosingZone(mt5DateObj){
+    const minute = mt5DateObj.getMinutes();
+    const warningBox = document.getElementById("h1CloseWarning");
+
+    if(minute >= 50){
+        warningBox.style.display = "block";
+    } else {
+        warningBox.style.display = "none";
+    }
+}
+
+// === MASTER CORE (SAKRAL - TIDAK DIUBAH) ===
+
+function saveState(){
+    const state = {
+        m5Memory, levels, institutional, lockedHour, logData,
+        inputs:{
+            h1h:h1h.value, h1l:h1l.value, m30h:m30h.value, m30l:m30l.value,
+            m15h:m15h.value, m15l:m15l.value, h4h:h4h.value, h4l:h4l.value,
+            h2h:h2h.value, h2l:h2l.value, rr:rrInput.value
+        },
+        newsAlerts: activeNewsAlerts, offset: MT5_OFFSET_HOURS
+    };
+    localStorage.setItem("GIP_SOVEREIGN_STATE", JSON.stringify(state));
+}
+
+function loadState(){
+    const saved = localStorage.getItem("GIP_SOVEREIGN_STATE");
+    if(!saved) return;
+    const state = JSON.parse(saved);
+    m5Memory = state.m5Memory || [];
+    levels = state.levels || null;
+    institutional = state.institutional || null;
+    lockedHour = state.lockedHour || null;
+    logData = state.logData || [];
+    activeNewsAlerts = state.newsAlerts || [];
+    MT5_OFFSET_HOURS = state.offset || 0;
+    if(state.inputs){
+        h1h.value = state.inputs.h1h; h1l.value = state.inputs.h1l;
+        m30h.value = state.inputs.m30h; m30l.value = state.inputs.m30l;
+        m15h.value = state.inputs.m15h; m15l.value = state.inputs.m15l;
+        h4h.value = state.inputs.h4h; h4l.value = state.inputs.h4l;
+        h2h.value = state.inputs.h2h; h2l.value = state.inputs.h2l;
+        rrInput.value = state.inputs.rr;
+    }
+    updateM5SlotsForFlow();
+    document.getElementById("log").innerText = logData.join("\n");
+    if(levels) processEngine(); 
+    updateAlertUI();
+}
+
+function addM5Candle() {
+    let h = parseFloat(document.getElementById("m5_high").value);
+    let l = parseFloat(document.getElementById("m5_low").value);
+    let c = parseFloat(document.getElementById("m5_close").value);
+    if (isNaN(h) || isNaN(l) || isNaN(c)) { alert("⚠️ M5 belum lengkap"); return; }
+    if (m5Memory.length >= 12) m5Memory.shift();
+    m5Memory.push({ high: h, low: l, close: c });
+    updateM5SlotsForFlow();
+    document.getElementById("m5_high").value = "";
+    document.getElementById("m5_low").value = "";
+    document.getElementById("m5_close").value = "";
+    processEngine();
+    saveState();
+}
+
+function updateM5SlotsForFlow() {
+    for (let i = 1; i <= 12; i++) {
+        let inputField = document.getElementById("m5_" + i);
+        if (m5Memory[i-1]) inputField.value = m5Memory[i-1].close;
+        else inputField.value = "";
+    }
+}
+
+function lockLevels(){
+    let now = getMT5Time().getHours(); 
     levels={
-        H1:{h:parseFloat(h1h.value),l:parseFloat(h1l.value)},
-        M30:{h:parseFloat(m30h.value),l:parseFloat(m30l.value)},
-        M15:{h:parseFloat(m15h.value),l:parseFloat(m15l.value)}
+        H1:{high:parseFloat(h1h.value),low:parseFloat(h1l.value)},
+        M30:{high:parseFloat(m30h.value),low:parseFloat(m30l.value)},
+        M15:{high:parseFloat(m15h.value),low:parseFloat(m15l.value)}
     };
-    inst={
-        H4:{h:parseFloat(h4h.value),l:parseFloat(h4l.value)},
-        H2:{h:parseFloat(h2h.value),l:parseFloat(h2l.value)}
+    if(Object.values(levels).some(tf=>isNaN(tf.high)||isNaN(tf.low))){alert("Isi level valid.");return;}
+    lockedHour=now;
+    document.getElementById("lockInfo").innerText="Structure locked jam "+now+":00 (MT5 Time)";
+    saveState();
+}
+
+function setInstitutional(){
+    institutional={
+        H4:{high:parseFloat(h4h.value),low:parseFloat(h4l.value)},
+        H2:{high:parseFloat(h2h.value),low:parseFloat(h2l.value)}
     };
-    if(Object.values(levels).some(v=>isNaN(v.h)||isNaN(v.l))) return alert("Fill Levels!");
-    alert("SYSTEM LOCKED. DISCIPLINE MODE ON.");
+    document.getElementById("institutionInfo").innerText="Filter aktif.";
+    saveState();
+}
+
+function getM5(){
+    let arr=[];
+    for(let i=1;i<=12;i++){
+        let v=parseFloat(document.getElementById("m5_"+i).value);
+        if(!isNaN(v))arr.push(v);
+    }
+    return arr;
 }
 
 function processEngine(){
-    if(!levels) return alert("Lock Core First!");
-    let d=[]; for(let i=1;i<=12;i++){ let v=parseFloat(document.getElementById("m5_"+i).value); if(!isNaN(v)) d.push(v); }
-    
-    // FIX AUDIT: Ensure prev2 (index length-3) exists
-    if(d.length < 12) return alert("Need full 12 M5 candles for accurate pressure analysis.");
+    if(!levels)return;
+    let arr=getM5();
+    if(arr.length<2)return;
+    let price=arr[arr.length-1];
+    let prev=arr[arr.length-2];
 
-    let price=d[11], prev=d[10], prev2=d[9];
-    
-    function getS(tf){
-        let h=levels[tf].h, l=levels[tf].l;
-        if(prev>h && price>h) return "BUY";
-        if(prev<l && price<l) return "SELL";
+    function breakSignal(tf){
+        let high=levels[tf].high, low=levels[tf].low;
+        if(prev>high && price>high)return "BUY";
+        if(prev<low && price<low)return "SELL";
         return "WAIT";
     }
 
-    let h1=getS("H1"), m15=getS("M15");
-    let pressure=0, side=null;
-    for(let i=11;i>=0;i--){
-        if(d[i]>levels.M15.h){ if(side==="SELL")break; side="BUY"; pressure++; }
-        else if(d[i]<levels.M15.l){ if(side==="BUY")break; side="SELL"; pressure++; }
+    let h1=breakSignal("H1");
+    let m30=breakSignal("M30");
+    let m15=breakSignal("M15");
+    let m5=price>prev?"BUY":"SELL";
+
+    let flowSig="NEUTRAL";
+    if(arr.length>=5){
+        let up=0,down=0;
+        for(let i=arr.length-4;i<arr.length;i++){
+            if(arr[i]>arr[i-1])up++;
+            else if(arr[i]<arr[i-1])down++;
+        }
+        if(up>=4)flowSig="STRONG_BUY";
+        else if(down>=4)flowSig="STRONG_SELL";
+    }
+
+    let pressure=0;
+    let side=null;
+    for(let i=arr.length-1;i>=0;i--){
+        let p=arr[i];
+        if(p>levels.M15.high){ if(side==="SELL")break; side="BUY"; pressure++; }
+        else if(p<levels.M15.low){ if(side==="BUY")break; side="SELL"; pressure++; }
         else break;
     }
 
-    let h1Valid = (h1==="BUY" && prev2>levels.H1.h && price>levels.H1.h) || (h1==="SELL" && prev2<levels.H1.l && price<levels.H1.l);
-    let primaryBias = h1;
-    let mode = (primaryBias!=="WAIT" && pressure>=3 && h1Valid) ? "GOLDEN" : (primaryBias!=="WAIT" && pressure>=2) ? "SCALP" : "WAIT";
+    let score=0;
+    score+=h1==="BUY"?4:h1==="SELL"?-4:0;
+    score+=m30==="BUY"?3:m30==="SELL"?-3:0;
+    score+=m15==="BUY"?2:m15==="SELL"?-2:0;
+    score+=m5==="BUY"?1:-1;
+    score+=flowSig==="STRONG_BUY"?2:flowSig==="STRONG_SELL"?-2:0;
+    score+=pressure;
 
-    // H2 HARD BLOCK
-    let h2Blocked = false;
-    if(!isNaN(inst.H2.h) && price > inst.H2.l && price < inst.H2.h){
-        primaryBias="WAIT"; mode="WAIT"; h2Blocked=true;
+    let final="NETRAL";
+    if(score>=10)final="🚀 GOLDEN BUY";
+    else if(score<=-10)final="🚀 GOLDEN SELL";
+    else if(score>=6)final="🔥 DOMINASI BUY";
+    else if(score<=-6)final="🔥 DOMINASI SELL";
+
+    h1Status.innerText="H1: "+h1;
+    m30Status.innerText="M30: "+m30;
+    m15Status.innerText="M15: "+m15;
+    m5Status.innerText="M5: "+m5;
+    flowStatus.innerText="FLOW: "+flowSig;
+    pressureStatus.innerText="PRESSURE: "+pressure;
+    finalStatus.innerText="FINAL: "+final;
+    confidenceBar.style.width=Math.min(100,Math.abs(score)*5)+"%";
+
+    function calcMission(tf, currentSignal) {
+        let range = levels[tf].high - levels[tf].low;
+        if(currentSignal==="BUY") return (levels[tf].high + (range*0.618)).toFixed(5);
+        if(currentSignal==="SELL") return (levels[tf].low - (range*0.618)).toFixed(5);
+        return "-";
     }
-
-    // H4 EXTREME
-    let h4Extreme = false;
-    if(!isNaN(inst.H4.h)){
-        let r=inst.H4.h-inst.H4.l;
-        let pos=(price-inst.H4.l)/r;
-        if((primaryBias==="BUY" && pos>0.85)||(primaryBias==="SELL" && pos<0.15)){
-            h4Extreme=true; mode="SCALP";
-        }
-    }
-
-    // SNIPER 30%
-    let hi=Math.max(...d.slice(-3)), lo=Math.min(...d.slice(-3));
-    let sniperEntry = primaryBias==="BUY" ? lo+((hi-lo)*0.3) : hi-((hi-lo)*0.3);
-    let entryTouched = (primaryBias==="BUY" && price<=sniperEntry) || (primaryBias==="SELL" && price>=sniperEntry);
-    if(!entryTouched && primaryBias!=="WAIT") mode="WAIT_PULLBACK";
-
-    // ADAPTIVE RISK
-    let sl=0, tp=0;
-    if(primaryBias!=="WAIT"){
-        sl = (mode==="GOLDEN") ? (primaryBias==="BUY"?levels.H1.l:levels.H1.h) : (primaryBias==="BUY"?levels.M15.l:levels.M15.h);
-        if(mode==="WAIT_PULLBACK") tp = NaN;
-        else if(mode==="SCALP") tp = primaryBias==="BUY" ? sniperEntry+(Math.abs(sniperEntry-sl)*1.5) : sniperEntry-(Math.abs(sniperEntry-sl)*1.5);
-        else tp = primaryBias==="BUY" ? levels.H1.h+((levels.H1.h-levels.H1.l)*0.618) : levels.H1.l-((levels.H1.h-levels.H1.l)*0.618);
-    }
-
-    // AI CHAT
-    let chat="";
-    if(h2Blocked) chat="HARGA DI ZONA H2. Konsolidasi besar. Bias dimatikan untuk keamanan modal.";
-    else if(mode==="WAIT_PULLBACK") chat="Bias "+primaryBias+" valid, tapi harga masih PREMIUM. Tunggu diskon di "+sniperEntry.toFixed(5)+".";
-    else if(mode==="SCALP") chat=h4Extreme ? "SCALP MODE: Harga di ujung H4. Ambil TP cepat (RR 1.5)." : "SCALP MODE: Momentum cukup untuk ekspansi mikro.";
-    else if(mode==="GOLDEN") chat="GOLDEN MOMENT: H1 Break Valid + High Pressure. Target Mission H1.";
-    else chat="Market netral. Menunggu breakout H1.";
-
-    // UI UPDATE
-    document.getElementById("aiGuideText").innerText = chat;
-    document.getElementById("out-entry").innerText = sniperEntry.toFixed(5);
-    document.getElementById("out-sl").innerText = sl===0?"-":sl.toFixed(5);
-    document.getElementById("out-tp").innerText = (isNaN(tp)||tp===0)?"- (Focus on Entry)":tp.toFixed(5);
     
-    let fS=document.getElementById("finalStatus");
-    fS.innerText = mode==="WAIT_PULLBACK" ? "WAIT PULLBACK" : (primaryBias==="WAIT"?"WAITING":mode+" "+primaryBias);
-    fS.className = "status big "+(primaryBias==="BUY"?"green":primaryBias==="SELL"?"red":"gray");
-    document.getElementById("subStatus").innerText = "Pressure: "+pressure+" | H1 Valid: "+h1Valid;
+    missionH1.innerText = "H1 Target: " + calcMission("H1", h1);
+    missionM30.innerText = "M30 Target: " + calcMission("M30", m30);
+    missionM15.innerText = "M15 Target: " + calcMission("M15", m15);
+    missionM5.innerText = "M5 Target: " + (m5==="BUY" ? (price + (price*0.0008)).toFixed(5) : (price - (price*0.0008)).toFixed(5));
 
-    // MISSION
-    let rH1=levels.H1.h-levels.H1.l;
-    document.getElementById("missionH1").innerText="H1: "+(primaryBias==="BUY"?(levels.H1.h+(rH1*0.618)).toFixed(5):primaryBias==="SELL"?(levels.H1.l-(rH1*0.618)).toFixed(5):"-");
-    
-    let t=new Date().toLocaleTimeString();
-    logData.push(`[${t}] ${mode} ${primaryBias} | P: ${price.toFixed(5)}`);
-    document.getElementById("log").innerText = logData.slice(-30).join("\n");
+    let interpretation = `FLOW: ${flowSig}\nSTRUCTURE: ${h1===m30 && h1!=="WAIT" ? "SYNC" : "DIVERGENT"}\nFINAL: ${final}`;
+    deepConclusion.innerText = interpretation;
+
+    if (h1 !== "WAIT") {
+        let rr = parseFloat(rrInput.value);
+        let slVal = h1 === "BUY" ? levels.M15.low : levels.M15.high;
+        let dist = Math.abs(price - slVal);
+        let tpVal = h1 === "BUY" ? (price + (dist * rr)) : (price - (dist * rr));
+        entry.innerText = "Entry: " + price.toFixed(5);
+        sl.innerText = "Stop Loss: " + slVal.toFixed(5);
+        tp.innerText = "Take Profit: " + tpVal.toFixed(5);
+    }
+    let now = getMT5Time();
+    let time = String(now.getHours()).padStart(2, '0') + ":" + String(now.getMinutes()).padStart(2, '0');
+    logData.push(`[${time}] BIAS: ${h1} | Price: ${price}`);
+    if(logData.length > 50) logData.shift();
+    document.getElementById("log").innerText = logData.join("\n");
+    saveState();
 }
+
+function exportData(){
+    const data = localStorage.getItem("GIP_SOVEREIGN_STATE");
+    if(!data) return;
+    const blob = new Blob([data], {type:"application/json"});
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "GIP_BACKUP.json";
+    link.click();
+}
+
+function importData(){
+    const input = document.createElement("input");
+    input.type = "file";
+    input.onchange = e => {
+        const reader = new FileReader();
+        reader.onload = event => {
+            localStorage.setItem("GIP_SOVEREIGN_STATE", event.target.result);
+            location.reload();
+        };
+        reader.readAsText(e.target.files[0]);
+    };
+    input.click();
+}
+
+function resetSystem(){
+    if(confirm("Reset semua data?")){
+        localStorage.removeItem("GIP_SOVEREIGN_STATE");
+        location.reload();
+    }
+}
+
+// === ULTRA STERILE RESET FUNCTIONS (CLEANS VISUALS) ===
+
+function resetStructureOnly() {
+    levels = null;
+    h1h.value = ""; h1l.value = "";
+    m30h.value = ""; m30l.value = "";
+    m15h.value = ""; m15l.value = "";
+    document.getElementById("lockInfo").innerText = "Structure cleared.";
+    
+    h1Status.innerText="H1: WAIT";
+    m30Status.innerText="M30: WAIT";
+    m15Status.innerText="M15: WAIT";
+    finalStatus.innerText="FINAL: -";
+    confidenceBar.style.width="0%";
+    missionH1.innerText="H1 Target: -";
+    missionM30.innerText="M30 Target: -";
+    missionM15.innerText="M15 Target: -";
+    
+    saveState();
+}
+
+function resetFilterOnly() {
+    institutional = null;
+    h4h.value = ""; h4l.value = "";
+    h2h.value = ""; h2l.value = "";
+    document.getElementById("institutionInfo").innerText = "Filter cleared.";
+    saveState();
+}
+
+function resetM5Only() {
+    m5Memory = [];
+    for (let i = 1; i <= 12; i++) {
+        document.getElementById("m5_" + i).value = "";
+    }
+    
+    flowStatus.innerText = "FLOW: -";
+    pressureStatus.innerText = "PRESSURE: 0";
+    m5Status.innerText = "M5: WAIT";
+    finalStatus.innerText = "FINAL: -";
+    confidenceBar.style.width = "0%";
+    missionM5.innerText = "M5 Target: -";
+    entry.innerText = ""; sl.innerText = ""; tp.innerText = "";
+    deepConclusion.innerText = "";
+
+    saveState();
+}
+
+function safeAutoUpdateTF() {
+    if (m5Memory.length < 3) return;
+    let last3 = m5Memory.slice(-3);
+    document.getElementById("m15h").value = Math.max(...last3.map(c => c.high)).toFixed(5);
+    document.getElementById("m15l").value = Math.min(...last3.map(c => c.low)).toFixed(5);
+    if (m5Memory.length >= 6) {
+        let last6 = m5Memory.slice(-6);
+        document.getElementById("m30h").value = Math.max(...last6.map(c => c.high)).toFixed(5);
+        document.getElementById("m30l").value = Math.min(...last6.map(c => c.low)).toFixed(5);
+    }
+}
+
+function setNewsAlert() {
+    const time = document.getElementById("newsTime").value;
+    const title = document.getElementById("newsTitle").value || "Market Event";
+    if(!time) return;
+    activeNewsAlerts.push({ time, title, triggered: false });
+    updateAlertUI();
+    saveState();
+}
+
+function updateAlertUI() {
+    const container = document.getElementById("activeAlerts");
+    container.innerHTML = activeNewsAlerts.map((n, idx) => 
+        `<div>• ${n.time} - ${n.title} <span onclick="removeAlert(${idx})" style="color:red; cursor:pointer;">[x]</span></div>`
+    ).join('');
+}
+
+function removeAlert(idx) {
+    activeNewsAlerts.splice(idx, 1);
+    updateAlertUI();
+    saveState();
+}
+
+function checkNewsAlerts(currentTime) {
+    const curShort = currentTime.substring(0, 5);
+    activeNewsAlerts.forEach(alertObj => {
+        if(alertObj.time === curShort && !alertObj.triggered) {
+            alertObj.triggered = true;
+            alert(`📢 NEWS ALERT: ${alertObj.title}`);
+            logData.push(`[${currentTime}] ⚠️ NEWS: ${alertObj.title}`);
+            document.getElementById("log").innerText = logData.join("\n");
+        }
+    });
+}
+
+window.addEventListener("load", () => {
+    loadState();
+    startMT5Clock();
+    const originalAdd = addM5Candle;
+    addM5Candle = function() {
+        originalAdd(); 
+        safeAutoUpdateTF(); 
+    };
+});
+window.addEventListener("beforeunload", saveState);
 </script>
 </body>
-</html>
+    </html>
+    
