@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GIP MTF DOMINANCE ENGINE · PRO HYBRID FINAL · PERSISTENT</title>
+
+<style>
+body{margin:0;font-family:Arial;background:#0b0f18;color:#fff;padding:15px;}
+.card{background:#141a2a;border:1px solid #1f2940;border-radius:12px;padding:15px;margin-bottom:15px;}
+h2{margin-top:0;color:#00eaff;}
+input{width:100%;padding:10px;margin:5px 0;background:#000;border:1px solid #00eaff;color:#0ff;border-radius:6px;}
+button{width:100%;padding:10px;margin-top:5px;background:#101828;border:1px solid #00eaff;color:#0ff;border-radius:6px;font-weight:bold;}
+.status{font-size:18px;padding:8px;border-radius:6px;margin:5px 0;text-align:center;}
+.green{color:#00ff99;}
+.red{color:#ff4d4d;}
+.yellow{color:#ffcc00;}
+.gray{color:#aaa;}
+.big{font-size:22px;font-weight:bold;}
+.bar{height:10px;background:#222;border-radius:5px;overflow:hidden;margin-top:5px;}
+.fill{height:100%;background:linear-gradient(90deg,#ff4d4d,#ffcc00,#00ff99);width:0%;}
+.small{font-size:12px;color:#aaa;margin-top:5px;}
+.note{font-size:12px;color:#ffcc00;margin-bottom:8px;}
+</style>
+</head>
+<body>
+
+<div class="card">
+<h2>🔒 LOCK LEVEL (CANDLE SUDAH CLOSE)</h2>
+<div class="note">Isi HIGH & LOW dari candle terakhir yang SUDAH CLOSE. Data tersimpan otomatis.</div>
+
+<b>H1</b>
+<input type="number" id="h1High">
+<input type="number" id="h1Low">
+
+<b>M30</b>
+<input type="number" id="m30High">
+<input type="number" id="m30Low">
+
+<b>M15</b>
+<input type="number" id="m15High">
+<input type="number" id="m15Low">
+
+<button onclick="lockLevels()">LOCK LEVEL</button>
+<button onclick="resetAll()">RESET</button>
+
+<div id="displayLevels" class="small"></div>
+</div>
+
+<div class="card">
+<h2>📥 INPUT M5 (DOUBLE CLOSE)</h2>
+
+<input type="number" id="m5Close1" placeholder="M5 Close Pertama">
+<input type="number" id="m5Close2" placeholder="M5 Close Kedua">
+
+<button onclick="updateEngine()">ANALYZE</button>
+</div>
+
+<div class="card">
+
+<h2>1️⃣ SCALP STATUS</h2>
+<div id="scalpStatus" class="status big gray">SCALP MENUNGGU</div>
+
+<h2>2️⃣ TIMEFRAME MATRIX</h2>
+<div id="h1Status" class="status gray">H1: WAIT</div>
+<div id="m30Status" class="status gray">M30: WAIT</div>
+<div id="m15Status" class="status gray">M15: WAIT</div>
+<div id="m5Status" class="status gray">M5: WAIT</div>
+
+<h2>3️⃣ DOMINANCE FINAL</h2>
+<div id="scoreStatus" class="status big gray">SCORE: 0</div>
+<div id="confidenceStatus" class="status gray">CONFIDENCE: 0%</div>
+<div class="bar"><div id="confidenceBar" class="fill"></div></div>
+<div id="finalStatus" class="status big gray">BELUM ADA DOMINASI</div>
+
+<div id="warningStatus" class="status yellow"></div>
+
+</div>
+
+<script>
+
+let levels=null;
+let weights={H1:4,M30:3,M15:2,M5:1};
+let breakCounter;
+let locked=false;
+
+function initCounters(){
+  breakCounter={
+    H1:{side:null,count:0},
+    M30:{side:null,count:0},
+    M15:{side:null,count:0}
+  };
+}
+
+initCounters();
+
+/* ================= AUTO SAVE SYSTEM ================= */
+
+function saveState(){
+  const state={
+    levels,
+    breakCounter,
+    locked,
+    h1High:h1High.value,
+    h1Low:h1Low.value,
+    m30High:m30High.value,
+    m30Low:m30Low.value,
+    m15High:m15High.value,
+    m15Low:m15Low.value,
+    m5Close1:m5Close1.value,
+    m5Close2:m5Close2.value,
+    scalpStatus:scalpStatus.innerText,
+    scalpClass:scalpStatus.className,
+    h1Status:h1Status.innerText,
+    h1Class:h1Status.className,
+    m30Status:m30Status.innerText,
+    m30Class:m30Status.className,
+    m15Status:m15Status.innerText,
+    m15Class:m15Status.className,
+    m5Status:m5Status.innerText,
+    m5Class:m5Status.className,
+    score:scoreStatus.innerText,
+    confidence:confidenceStatus.innerText,
+    barWidth:confidenceBar.style.width,
+    finalText:finalStatus.innerText,
+    finalClass:finalStatus.className,
+    warning:warningStatus.innerText
+  };
+  localStorage.setItem("GIP_PRO_STATE",JSON.stringify(state));
+}
+
+function loadState(){
+  const saved=localStorage.getItem("GIP_PRO_STATE");
+  if(!saved) return;
+
+  const s=JSON.parse(saved);
+
+  levels=s.levels;
+  breakCounter=s.breakCounter;
+  locked=s.locked;
+
+  h1High.value=s.h1High;
+  h1Low.value=s.h1Low;
+  m30High.value=s.m30High;
+  m30Low.value=s.m30Low;
+  m15High.value=s.m15High;
+  m15Low.value=s.m15Low;
+  m5Close1.value=s.m5Close1;
+  m5Close2.value=s.m5Close2;
+
+  scalpStatus.innerText=s.scalpStatus;
+  scalpStatus.className=s.scalpClass;
+
+  h1Status.innerText=s.h1Status;
+  h1Status.className=s.h1Class;
+
+  m30Status.innerText=s.m30Status;
+  m30Status.className=s.m30Class;
+
+  m15Status.innerText=s.m15Status;
+  m15Status.className=s.m15Class;
+
+  m5Status.innerText=s.m5Status;
+  m5Status.className=s.m5Class;
+
+  scoreStatus.innerText=s.score;
+  confidenceStatus.innerText=s.confidence;
+  confidenceBar.style.width=s.barWidth;
+
+  finalStatus.innerText=s.finalText;
+  finalStatus.className=s.finalClass;
+
+  warningStatus.innerText=s.warning;
+}
+
+window.onload=loadState;
+
+/* ================= ORIGINAL ENGINE ================= */
+
+function lockLevels(){
+  let h1h=parseFloat(h1High.value);
+  let h1l=parseFloat(h1Low.value);
+  let m30h=parseFloat(m30High.value);
+  let m30l=parseFloat(m30Low.value);
+  let m15h=parseFloat(m15High.value);
+  let m15l=parseFloat(m15Low.value);
+
+  if([h1h,h1l,m30h,m30l,m15h,m15l].some(isNaN)){
+    alert("Isi semua level dengan angka valid");
+    return;
+  }
+
+  levels={
+    H1:{high:h1h,low:h1l},
+    M30:{high:m30h,low:m30l},
+    M15:{high:m15h,low:m15l}
+  };
+
+  initCounters();
+  locked=true;
+
+  displayLevels.innerText=
+  `H1 ${h1h}/${h1l} | M30 ${m30h}/${m30l} | M15 ${m15h}/${m15l}`;
+
+  saveState();
+}
+
+function resetAll(){
+  localStorage.removeItem("GIP_PRO_STATE");
+  location.reload();
+}
+
+function structure(tf,price){
+  let high=levels[tf].high;
+  let low=levels[tf].low;
+
+  if(price>high){
+    if(breakCounter[tf].side==="BUY") breakCounter[tf].count++;
+    else{breakCounter[tf].side="BUY";breakCounter[tf].count=1;}
+  }
+  else if(price<low){
+    if(breakCounter[tf].side==="SELL") breakCounter[tf].count++;
+    else{breakCounter[tf].side="SELL";breakCounter[tf].count=1;}
+  }
+
+  if(breakCounter[tf].count>=2){
+    return breakCounter[tf].side;
+  }
+
+  return "WAIT";
+}
+
+function updateEngine(){
+
+  if(!locked){ alert("Lock level dulu!"); return; }
+
+  let c1=parseFloat(m5Close1.value);
+  let c2=parseFloat(m5Close2.value);
+
+  if(isNaN(c1)||isNaN(c2)){
+    alert("Masukkan 2 close M5 valid");
+    return;
+  }
+
+  let price=c2;
+
+  let h1=structure("H1",price);
+  let m30=structure("M30",price);
+  let m15=structure("M15",price);
+
+  let m5="WAIT";
+  if(c1>levels.M15.high && c2>levels.M15.high) m5="BUY";
+  else if(c1<levels.M15.low && c2<levels.M15.low) m5="SELL";
+
+  if(m5==="BUY"){
+    scalpStatus.className="status big green";
+    scalpStatus.innerText="🔥 SCALP BUY AKTIF";
+  }
+  else if(m5==="SELL"){
+    scalpStatus.className="status big red";
+    scalpStatus.innerText="🔥 SCALP SELL AKTIF";
+  }
+  else{
+    scalpStatus.className="status big gray";
+    scalpStatus.innerText="SCALP MENUNGGU";
+  }
+
+  setTF("h1Status",h1);
+  setTF("m30Status",m30);
+  setTF("m15Status",m15);
+  setTF("m5Status",m5);
+
+  let score=0;
+  score+=h1==="BUY"?weights.H1:h1==="SELL"?-weights.H1:0;
+  score+=m30==="BUY"?weights.M30:m30==="SELL"?-weights.M30:0;
+  score+=m15==="BUY"?weights.M15:m15==="SELL"?-weights.M15:0;
+  score+=m5==="BUY"?weights.M5:m5==="SELL"?-weights.M5:0;
+
+  scoreStatus.innerText="SCORE: "+score;
+
+  let confidence=Math.min(100,Math.abs(score)/10*100);
+  confidenceStatus.innerText="CONFIDENCE: "+confidence.toFixed(0)+"%";
+  confidenceBar.style.width=confidence+"%";
+
+  if(score>=5){
+    finalStatus.className="status big green";
+    finalStatus.innerText="🔥 DOMINASI NAIK AKTIF";
+  }
+  else if(score<=-5){
+    finalStatus.className="status big red";
+    finalStatus.innerText="🔥 DOMINASI TURUN AKTIF";
+  }
+  else{
+    finalStatus.className="status big yellow";
+    finalStatus.innerText="⚖ KONTROL CAMPUR - MODE SCALP";
+  }
+
+  warningStatus.innerText="";
+
+  let rangeH1=levels.H1.high-levels.H1.low;
+
+  if(h1==="BUY" && price<levels.H1.low)
+    warningStatus.innerText="⚠ RECLAIM KUAT - DOMINASI BATAL";
+
+  if(h1==="SELL" && price>levels.H1.high)
+    warningStatus.innerText="⚠ RECLAIM KUAT - DOMINASI BATAL";
+
+  if(price>levels.H1.high+rangeH1*1.5 ||
+     price<levels.H1.low-rangeH1*1.5)
+    warningStatus.innerText="⚠ LEVEL H1 SUDAH TIDAK VALID - LOCK ULANG";
+
+  saveState();
+}
+
+function setTF(id,signal){
+  let el=document.getElementById(id);
+  if(signal==="BUY") el.className="status green";
+  else if(signal==="SELL") el.className="status red";
+  else el.className="status gray";
+  el.innerText=id.replace("Status","")+": "+signal;
+}
+
+</script>
+
+</body>
+</html>

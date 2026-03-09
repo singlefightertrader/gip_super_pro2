@@ -1,0 +1,504 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GIP V5 · HYBRID MASTER ENGINE (AUDITED)</title>
+
+<style>
+body{margin:0;font-family:Arial;background:#0b0f18;color:#fff;padding:15px;}
+.card{background:#141a2a;border:1px solid #1f2940;border-radius:12px;padding:15px;margin-bottom:15px;}
+h2{margin-top:0;color:#00eaff;}
+input{width:100%;padding:8px;margin:4px 0;background:#000;border:1px solid #00eaff;color:#0ff;border-radius:6px;}
+button{width:100%;padding:10px;margin-top:6px;border-radius:6px;font-weight:bold;background:#101828;border:1px solid #00eaff;color:#0ff;cursor:pointer;}
+.status{padding:8px;margin:5px 0;border-radius:6px;text-align:center;}
+.green{color:#00ff99;}
+.red{color:#ff4d4d;}
+.yellow{color:#ffcc00;}
+.gray{color:#aaa;}
+.big{font-size:20px;font-weight:bold;}
+.bar{height:8px;background:#222;border-radius:5px;overflow:hidden;margin-top:5px;}
+.fill{height:100%;background:linear-gradient(90deg,#ff4d4d,#ffcc00,#00ff99);width:0%;}
+.small{font-size:12px;color:#aaa;margin-top:5px;white-space:pre-line;}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;}
+.log{background:#0a0e14;padding:8px;border-radius:6px;font-family:monospace;font-size:11px;height:120px;overflow-y:auto;color:#0ff;}
+.deepBox{background:#101826;border:1px solid #23304a;padding:10px;border-radius:8px;margin-top:6px;}
+
+/* MISSION PRICE STYLES */
+.mission-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+.m-box { padding: 10px; border-radius: 6px; font-weight: bold; font-size: 13px; text-align: center; border: 1px solid rgba(255,255,255,0.1); }
+.m-h1 { background: #9b59b6; color: #fff; border-left: 5px solid #fff; }
+.m-m30 { background: #2980b9; color: #fff; border-left: 5px solid #fff; }
+.m-m15 { background: #f1c40f; color: #000; border-left: 5px solid #000; }
+.m-m5 { background: #2ecc71; color: #000; border-left: 5px solid #000; }
+</style>
+</head>
+<body>
+
+<div class="card">
+<h2>🔒 LOCK STRUCTURE (1x per H1)</h2>
+H1 High <input type="number" id="h1h">
+H1 Low <input type="number" id="h1l">
+M30 High <input type="number" id="m30h">
+M30 Low <input type="number" id="m30l">
+M15 High <input type="number" id="m15h">
+M15 Low <input type="number" id="m15l">
+<button onclick="lockLevels()">LOCK STRUCTURE</button>
+<div id="lockInfo" class="small"></div>
+</div>
+
+<div class="card">
+<h2>🏦 H2 / H4 FILTER</h2>
+H4 High <input type="number" id="h4h">
+H4 Low <input type="number" id="h4l">
+H2 High <input type="number" id="h2h">
+H2 Low <input type="number" id="h2l">
+<button onclick="setInstitutional()">SET FILTER</button>
+<div id="institutionInfo" class="small"></div>
+</div>
+
+<div class="card">
+<h2>📥 M5 MEMORY (12 SLOT)</h2>
+<div class="grid">
+<input type="number" id="m5_1"><input type="number" id="m5_2"><input type="number" id="m5_3">
+<input type="number" id="m5_4"><input type="number" id="m5_5"><input type="number" id="m5_6">
+<input type="number" id="m5_7"><input type="number" id="m5_8"><input type="number" id="m5_9">
+<input type="number" id="m5_10"><input type="number" id="m5_11"><input type="number" id="m5_12">
+</div>
+<button onclick="processEngine()">PROCESS ENGINE</button>
+<div class="small">Isi sesuai urutan close candle. Telat input aman.</div>
+</div>
+
+<div class="card">
+<h2>🎯 DYNAMIC MISSION PRICES</h2>
+<div class="mission-grid">
+    <div id="missionH1" class="m-box m-h1">H1 Target: -</div>
+    <div id="missionM30" class="m-box m-m30">M30 Target: -</div>
+    <div id="missionM15" class="m-box m-m15">M15 Target: -</div>
+    <div id="missionM5" class="m-box m-m5">M5 Target: -</div>
+</div>
+</div>
+
+<div class="card">
+<h2>📊 ENGINE STATUS</h2>
+<div id="h1Status" class="status gray">H1: WAIT</div>
+<div id="m30Status" class="status gray">M30: WAIT</div>
+<div id="m15Status" class="status gray">M15: WAIT</div>
+<div id="m5Status" class="status gray">M5: WAIT</div>
+<div id="flowStatus" class="status gray">FLOW: -</div>
+<div id="pressureStatus" class="status gray">PRESSURE: 0</div>
+<div id="finalStatus" class="status big gray">FINAL: -</div>
+<div class="bar"><div id="confidenceBar" class="fill"></div></div>
+</div>
+
+<div class="card">
+<h2>🧠 DEEP ENGINE INTERPRETATION</h2>
+<div class="deepBox" id="deepFlow"></div>
+<div class="deepBox" id="deepStructure"></div>
+<div class="deepBox" id="deepInstitution"></div>
+<div class="deepBox" id="deepConflict"></div>
+<div class="deepBox" id="deepConclusion"></div>
+</div>
+
+<div class="card">
+<h2>🛡 RISK ENGINE</h2>
+RR <input type="number" id="rrInput" value="2" step="0.1">
+<div id="entry" class="small"></div>
+<div id="sl" class="small"></div>
+<div id="tp" class="small"></div>
+</div>
+
+<div class="card">
+<h2>📝 GOLDEN LOG</h2>
+<div id="log" class="log"></div>
+</div>
+
+<script>
+let levels=null;
+let institutional=null;
+let lockedHour=null;
+let logData=[];
+
+function lockLevels(){
+    let now=new Date().getHours();
+    if(lockedHour===now){ lockInfo.innerText="Sudah lock periode ini."; return;}
+    levels={
+        H1:{high:parseFloat(h1h.value),low:parseFloat(h1l.value)},
+        M30:{high:parseFloat(m30h.value),low:parseFloat(m30l.value)},
+        M15:{high:parseFloat(m15h.value),low:parseFloat(m15l.value)}
+    };
+    if(Object.values(levels).some(tf=>isNaN(tf.high)||isNaN(tf.low))){alert("Isi level valid.");return;}
+    lockedHour=now;
+    lockInfo.innerText="Structure locked jam "+now+":00";
+}
+
+function setInstitutional(){
+    institutional={
+        H4:{high:parseFloat(h4h.value),low:parseFloat(h4l.value)},
+        H2:{high:parseFloat(h2h.value),low:parseFloat(h2l.value)}
+    };
+    institutionInfo.innerText="Filter aktif.";
+}
+
+function getM5(){
+    let arr=[];
+    for(let i=1;i<=12;i++){
+        let v=parseFloat(document.getElementById("m5_"+i).value);
+        if(!isNaN(v))arr.push(v);
+    }
+    return arr;
+}
+
+function processEngine(){
+    if(!levels)return;
+    let arr=getM5();
+    if(arr.length<2)return;
+
+    let price=arr[arr.length-1];
+    let prev=arr[arr.length-2];
+
+    function breakSignal(tf){
+        let high=levels[tf].high, low=levels[tf].low;
+        if(prev>high && price>high)return "BUY";
+        if(prev<low && price<low)return "SELL";
+        return "WAIT";
+    }
+
+    let h1=breakSignal("H1");
+    let m30=breakSignal("M30");
+    let m15=breakSignal("M15");
+    let m5=price>prev?"BUY":"SELL";
+
+    let flowSig="NEUTRAL";
+    if(arr.length>=5){
+        let up=0,down=0;
+        for(let i=arr.length-4;i<arr.length;i++){
+            if(arr[i]>arr[i-1])up++;
+            else if(arr[i]<arr[i-1])down++;
+        }
+        if(up>=4)flowSig="STRONG_BUY";
+        else if(down>=4)flowSig="STRONG_SELL";
+    }
+
+    let pressure=0;
+    let side=null;
+    for(let i=arr.length-1;i>=0;i--){
+        let p=arr[i];
+        if(p>levels.M15.high){ if(side==="SELL")break; side="BUY"; pressure++; }
+        else if(p<levels.M15.low){ if(side==="BUY")break; side="SELL"; pressure++; }
+        else break;
+    }
+
+    let score=0;
+    score+=h1==="BUY"?4:h1==="SELL"?-4:0;
+    score+=m30==="BUY"?3:m30==="SELL"?-3:0;
+    score+=m15==="BUY"?2:m15==="SELL"?-2:0;
+    score+=m5==="BUY"?1:-1;
+    score+=flowSig==="STRONG_BUY"?2:flowSig==="STRONG_SELL"?-2:0;
+    score+=pressure;
+
+    let final="NETRAL";
+    if(score>=10)final="🚀 GOLDEN BUY";
+    else if(score<=-10)final="🚀 GOLDEN SELL";
+    else if(score>=6)final="🔥 DOMINASI BUY";
+    else if(score<=-6)final="🔥 DOMINASI SELL";
+
+    h1Status.innerText="H1: "+h1;
+    m30Status.innerText="M30: "+m30;
+    m15Status.innerText="M15: "+m15;
+    m5Status.innerText="M5: "+m5;
+    flowStatus.innerText="FLOW: "+flowSig;
+    pressureStatus.innerText="PRESSURE: "+pressure;
+    finalStatus.innerText="FINAL: "+final;
+    confidenceBar.style.width=Math.min(100,Math.abs(score)*5)+"%";
+
+    // DEEP INTERPRETATION
+    let flowText = (flowSig==="STRONG_BUY") ? "🟢 FLOW STRONG BUY → Momentum mikro dominan." : (flowSig==="STRONG_SELL") ? "🔴 FLOW STRONG SELL → Tekanan jual mikro dominan." : "🟡 FLOW NETRAL";
+    deepFlow.innerText = flowText;
+
+    let structureText = (h1===m30 && m30===m15 && h1!=="WAIT") ? "🧭 ALIGNMENT KUAT → Kondisi trend continuation." : "📊 Struktur Fragmentasi.";
+    deepStructure.innerText = structureText;
+
+    let instText="";
+    if(!institutional) instText="🏦 Institutional filter tidak aktif.";
+    else {
+        let h4h=institutional.H4.high, h4l=institutional.H4.low, mid=(h4h+h4l)/2;
+        if(price>=h4h) instText="🚨 Area Distribusi H4 → Rawan Fakeout.";
+        else if(price<=h4l) instText="🚨 Area Akumulasi H4 → Rawan Squeeze.";
+        else if(Math.abs(price-mid)<(h4h-h4l)*0.2) instText="🟢 Harga di tengah range H4 → Aman scalp.";
+        else instText="📈 Zona operasional H4.";
+    }
+    deepInstitution.innerText = instText;
+
+    let conflict = (final.includes("BUY") && instText.includes("Distribusi")) ? "⚠ WARNING → BUY di zona distribusi." : (final.includes("SELL") && instText.includes("Akumulasi")) ? "⚠ WARNING → SELL di zona akumulasi." : "✅ Tidak ada konflik.";
+    deepConflict.innerText = conflict;
+
+    // --- RE-ADDING AI DICTIONARIES (MODE 1 & 2) ---
+    let delta = Math.abs(price - prev);
+    let volatility = delta > (price * 0.0005) ? "HIGH" : "LOW";
+    
+    let mode1 = "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🧠 MODE 1: REAL MARKET READER\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+    mode1 += "• FLOW: " + flowText + "\n• STRUCT: " + structureText + "\n• PSYCH: " + (volatility==="HIGH" ? "Adrenalin Tinggi." : "Efisien.") + "\n\n";
+    
+    let mode2 = "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🏛️ MODE 2: RATIONAL ANALYSIS\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+    mode2 += "• VOLATILITY: " + volatility + "\n• ALIGNMENT: " + (h1===m30 ? "Sync." : "Divergent.") + "\n• RISK: " + conflict + "\n\n";
+
+    // --- MISSION PRICE ENGINE ---
+    function calcMission(tf, currentSignal) {
+        let range = levels[tf].high - levels[tf].low;
+        if(currentSignal==="BUY") return (levels[tf].high + (range*0.618)).toFixed(5);
+        if(currentSignal==="SELL") return (levels[tf].low - (range*0.618)).toFixed(5);
+        return "-";
+    }
+    let h1m = calcMission("H1", h1);
+    let m30m = calcMission("M30", m30);
+    let m15m = calcMission("M15", m15);
+    let m5m = m5==="BUY" ? (price + (price*0.0008)).toFixed(5) : (price - (price*0.0008)).toFixed(5);
+
+    missionH1.innerText = "H1 Target: " + h1m;
+    missionM30.innerText = "M30 Target: " + m30m;
+    missionM15.innerText = "M15 Target: " + m15m;
+    missionM5.innerText = "M5 Target: " + m5m;
+
+    // --- MODE 3: LIVE ACTION ---
+    let mode3="━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🚀 MODE 3: LIVE ACTION (LVL 10)\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n";
+    if(final.includes("GOLDEN")) mode3+="🎯 ENTRY: Tunggu M15 Close. Target: " + (h1==="BUY" ? h1m : calcMission("H1", "SELL")) + "\n";
+    else if(final.includes("DOMINASI")) mode3+="⚡ SCALP: M5 Confirmation 2x. Target: " + (h1==="BUY" ? m15m : calcMission("M15", "SELL")) + "\n";
+    else mode3+="⏳ WAIT: No setup detected.\n";
+
+    deepConclusion.innerText = mode1 + mode2 + mode3;
+
+    /* ===================================================== */
+    /* ===== ADD ONLY: MASTER DICTIONARY (LVL 10+) ========= */
+    /* ===================================================== */
+
+    let aiLive = "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+    aiLive += "🔬 MASTER TRADING DICTIONARY (EXTRA DETAIL)\n";
+    aiLive += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n";
+
+    // 1. Flow + Structure
+    aiLive += "🌊 FLOW + STRUCTURE (Market Synergy):\n";
+    if(flowSig.includes("STRONG") && h1===m30 && h1!=="WAIT") {
+        aiLive += "• Terjadi 'Symmetry Momentum'. Arus mikro (M5) mendorong struktur makro (H1) secara simultan.\n";
+        aiLive += "• Validasi: Tunggu 1 candle M15 CLOSE di luar range High/Low jam sebelumnya untuk konfirmasi ekspansi.\n";
+        aiLive += "• Invalidation: Setup batal jika candle M15 berikutnya berbalik dan CLOSE kembali di dalam body candle sebelumnya (Engulfing Fail).\n\n";
+    } else {
+        aiLive += "• 'Noise Correlation'. Arus mikro dan makro tidak sinkron. Market sedang membangun 'Liquidity Pool'.\n";
+        aiLive += "• Strategi: Tunggu Pressure mencapai ≥ 2 sebelum mempertimbangkan 'Scale-in'.\n\n";
+    }
+
+    // 2. Structure + Institutional
+    aiLive += "🏦 STRUCTURE + INSTITUTIONAL (Smart Money Trap):\n";
+    if(instText.includes("Distribusi") || instText.includes("Akumulasi")) {
+        aiLive += "• 'Institutional Order Block Interaction'. Harga menyentuh zona minat pemain besar (Area of Interest).\n";
+        aiLive += "• Konfirmasi: Wajib tunggu harga keluar dari zona H4 ini dan melakukan 'Retest' tanpa menembus level High/Low zona tersebut.\n";
+        aiLive += "• Invalidation: Level invalid jika harga menembus level " + (instText.includes("Distribusi") ? institutional.H4.high : institutional.H4.low) + " dengan Pressure masif ≥ 3.\n\n";
+    } else {
+        aiLive += "• 'Retail Range Navigation'. Harga bergerak di area efisiensi likuiditas.\n";
+        aiLive += "• Fokus pada Level Mission Price M15 sebagai pemberhentian terdekat.\n\n";
+    }
+
+    // 3. Pressure + Final
+    aiLive += "⚡ PRESSURE + FINAL (Execution Edge):\n";
+    if(pressure >= 3) {
+        aiLive += "• 'Exhaustion or Breakout'. Tekanan mencapai titik jenuh (Parabolic State).\n";
+        aiLive += "• Konfirmasi: Tunggu 2 candle M5 CLOSE searah secara beruntun di luar level M15.\n";
+        aiLive += "• Note: Jika Final adalah " + final + " dan Pressure ≥ 3, edge statistik meningkat.\n\n";
+    } else {
+        aiLive += "• 'Passive Absorption'. Tekanan rendah menunjukkan adanya penyerapan order oleh limit order besar.\n";
+        aiLive += "• Hindari eksekusi agresif sebelum Pressure meningkat.\n\n";
+    }
+
+    // 4. Conflict + Institutional
+    aiLive += "⚖️ CONFLICT + INSTITUTIONAL (Risk Mitigation):\n";
+    if(conflict.includes("WARNING")) {
+        aiLive += "• 'Structural Divergence'. Tren retail berlawanan dengan jebakan institusi.\n";
+        aiLive += "• Validasi: Setup hanya boleh diambil jika harga berhasil CLOSE di atas H4 High (untuk BUY) atau di bawah H4 Low (untuk SELL).\n";
+        aiLive += "• Invalidation: Segera exit jika muncul candle Pinbar (ekor panjang) menyentuh level institusi.\n\n";
+    } else {
+        aiLive += "• 'Harmonic Flow'. Tidak ada hambatan dari pemain besar. Jalan menuju Mission Price terbuka.\n\n";
+    }
+
+    // 5. Volatility + Entry Risk
+    aiLive += "📊 VOLATILITY + ENTRY RISK (Capital Protection):\n";
+    if(volatility === "HIGH") {
+        aiLive += "• 'High Market Intensity'. Risiko slippage tinggi. Spread rawan melebar.\n";
+        aiLive += "• Entry: Gunakan 'Limit Order' di level retest candle M5 terakhir, jangan mengejar harga (Chase).\n";
+        aiLive += "• Invalidation: Jika harga berbalik sejauh 50% dari range H1 High-Low dalam 15 menit, segera amankan modal.\n\n";
+    } else {
+        aiLive += "• 'Low Intensity Accumulation'. Pergerakan stabil dan terukur.\n";
+        aiLive += "• Entry: Konfirmasi di TF M1 cukup untuk mencari 'Sniping' entry.\n\n";
+    }
+
+    aiLive += "💡 INFO KONFIRMASI:\n";
+    aiLive += "Konfirmasi adalah validasi arah (Confirmation Bias Mitigation). Selalu gunakan TF M15 untuk konfirmasi struktur utama dan M5 untuk konfirmasi momentum entry.\n";
+
+    deepConclusion.innerText += aiLive;
+
+    /* ===================================================== */
+    /* ===== ADD ONLY: INSTITUTIONAL PRECISION MODE ======== */
+    /* ===================================================== */
+
+    let aiPrecision = "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+    aiPrecision += "🔬 INSTITUTIONAL PRECISION MODE\n";
+    aiPrecision += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n";
+
+    // A. FLOW + STRUCTURE (NUMERIC PRECISION)
+    aiPrecision += "🔄 FLOW + STRUCTURE ALIGNMENT:\n";
+    if(flowSig === "STRONG_BUY" && h1 === "BUY") {
+        aiPrecision += "• Edge statistik meningkat pada sisi Bullish.\n";
+        aiPrecision += "• Konfirmasi: Tunggu 2 candle M15 CLOSE berturut-turut di atas " + levels.H1.high.toFixed(5) + ".\n";
+        aiPrecision += "• Invalidation: Setup batal jika harga CLOSE kembali di bawah " + levels.M15.low.toFixed(5) + ".\n\n";
+    } else if(flowSig === "STRONG_SELL" && h1 === "SELL") {
+        aiPrecision += "• Edge statistik meningkat pada sisi Bearish.\n";
+        aiPrecision += "• Konfirmasi: Tunggu 2 candle M15 CLOSE berturut-turut di bawah " + levels.H1.low.toFixed(5) + ".\n";
+        aiPrecision += "• Invalidation: Setup batal jika harga CLOSE kembali di atas " + levels.M15.high.toFixed(5) + ".\n\n";
+    } else {
+        aiPrecision += "• Kondisi Non-Sinkron (Divergence). Probabilitas rendah.\n";
+        aiPrecision += "• Risk terukur: Hindari entry sampai Flow M5 searah dengan H1 Breakout.\n\n";
+    }
+
+    // B. STRUCTURE + INSTITUTIONAL (NON-CRASH LOGIC)
+    aiPrecision += "🏦 STRUCTURAL-INSTITUTIONAL PRECISION:\n";
+    if(institutional && institutional.H4) {
+        if(price >= institutional.H4.high) {
+            aiPrecision += "• Harga berada di Zona Distribusi H4 (" + institutional.H4.high.toFixed(5) + ").\n";
+            aiPrecision += "• Konfirmasi: Valid jika 2 candle M15 CLOSE berturut-turut di atas " + institutional.H4.high.toFixed(5) + " dengan Pressure ≥ 2.\n";
+            aiPrecision += "• Invalidation: Batal jika terjadi penolakan (reject) dan harga masuk kembali di bawah " + institutional.H4.high.toFixed(5) + ".\n\n";
+        } else if(price <= institutional.H4.low) {
+            aiPrecision += "• Harga berada di Zona Akumulasi H4 (" + institutional.H4.low.toFixed(5) + ").\n";
+            aiPrecision += "• Konfirmasi: Valid jika 2 candle M15 CLOSE berturut-turut di bawah " + institutional.H4.low.toFixed(5) + " dengan Pressure ≥ 2.\n";
+            aiPrecision += "• Invalidation: Batal jika harga CLOSE kembali di atas " + institutional.H4.low.toFixed(5) + ".\n\n";
+        } else {
+            aiPrecision += "• Harga di Area Netral (" + institutional.H4.low.toFixed(5) + " - " + institutional.H4.high.toFixed(5) + ").\n";
+            aiPrecision += "• Probabilitas scalping normal berdasarkan struktur internal.\n\n";
+        }
+    } else {
+        aiPrecision += "• Filter Institusional belum diaktifkan. Gunakan level SR M15 sebagai acuan utama.\n\n";
+    }
+
+    // C. PRESSURE + FINAL (REALISTIC THRESHOLD)
+    aiPrecision += "⚡ PRESSURE & EXECUTION DYNAMICS:\n";
+    if(pressure >= 3) {
+        aiPrecision += "• Tekanan memenuhi ambang valid (Breakout kuat terdeteksi).\n";
+        aiPrecision += "• Konfirmasi: Valid jika Pressure tetap ≥ 3 dan harga bertahan searah breakout.\n";
+        aiPrecision += "• Target terukur: Mission Price terdekat (" + (h1==="BUY" ? h1m : calcMission("H1","SELL")) + ").\n\n";
+    } else if(pressure >= 2) {
+        aiPrecision += "• Tekanan memenuhi ambang valid (Expansion PHASE).\n";
+        aiPrecision += "• Konfirmasi: Tunggu 2 candle M5 CLOSE berturut-turut searah.\n\n";
+    } else {
+        aiPrecision += "• Tekanan rendah (Consolidation Flow). Sinyal belum cukup kuat.\n\n";
+    }
+
+    // D. CONFLICT + RISK MITIGATION
+    aiPrecision += "⚖️ CONFLICT RESOLUTION:\n";
+    if(conflict.includes("WARNING")) {
+        aiPrecision += "• Risk terukur: Terdeteksi konflik tren vs zona institusi.\n";
+        aiPrecision += "• Konfirmasi ketat: Wajib tunggu 2 candle M15 CLOSE berturut-turut menembus level institusi.\n";
+        aiPrecision += "• Invalidation: Jika harga gagal menembus level institusi dalam 3 candle M15 ke depan.\n\n";
+    } else {
+        aiPrecision += "• Tidak ada hambatan struktural besar. Kondisi selaras dengan parameter engine.\n\n";
+    }
+
+    deepConclusion.innerText += aiPrecision;
+
+    /* ===================================================== */
+    /* ===== ADD ONLY: MACRO DOMINANT FINAL TRUE VERSION === */
+    /* ===================================================== */
+
+    // LAYER 1 — H1 DOUBLE CONFIRM VALIDATION
+    let h1BreakValid = false;
+    if (h1 === "BUY" && arr.length >= 3) {
+        if (arr[arr.length-3] > levels.H1.high && prev > levels.H1.high && price > levels.H1.high) h1BreakValid = true;
+    } else if (h1 === "SELL" && arr.length >= 3) {
+        if (arr[arr.length-3] < levels.H1.low && prev < levels.H1.low && price < levels.H1.low) h1BreakValid = true;
+    }
+
+    // LAYER 2 — VALID LIQUIDITY SWEEP (NO FALSE RETRACE)
+    let primaryBias = "WAIT";
+    if (h1 === "BUY") primaryBias = "BUY";
+    else if (h1 === "SELL") primaryBias = "SELL";
+
+    let sweepMsg = "";
+    if (h1 === "BUY" && h1BreakValid && price < levels.H1.high) {
+        primaryBias = "WAIT";
+        sweepMsg = "\n⚠️ VALID LIQUIDITY SWEEP TERDETEKSI\nBreak H1 gagal dipertahankan setelah ekspansi valid.\nRisk meningkat. Tunggu 2 close ulang.\n";
+    } else if (h1 === "SELL" && h1BreakValid && price > levels.H1.low) {
+        primaryBias = "WAIT";
+        sweepMsg = "\n⚠️ VALID LIQUIDITY SWEEP TERDETEKSI\nBreak H1 gagal dipertahankan setelah ekspansi valid.\nRisk meningkat. Tunggu 2 close ulang.\n";
+    }
+
+    // LAYER 3 — H2 MID-CYCLE STRUCTURE FILTER
+    let h2BlockMsg = "";
+    if (institutional && institutional.H2) {
+        if (primaryBias === "BUY" && price < institutional.H2.low) {
+            primaryBias = "WAIT";
+            h2BlockMsg = "• H2 Mid-Cycle Block aktif. Struktur mikro tidak selaras dengan transisi H2.\n";
+        } else if (primaryBias === "SELL" && price > institutional.H2.high) {
+            primaryBias = "WAIT";
+            h2BlockMsg = "• H2 Mid-Cycle Block aktif. Struktur mikro tidak selaras dengan transisi H2.\n";
+        }
+    }
+
+    // LAYER 4 — REALISTIC EXECUTION MODE
+    let executionMode = "WAIT";
+    if (primaryBias !== "WAIT") {
+        if (pressure >= 3 && h1BreakValid === true) executionMode = "GOLDEN";
+        else if (pressure >= 2) executionMode = "SCALP";
+        else executionMode = "WAIT";
+    }
+
+    // LAYER 5 — MISSION TARGET SEPARATE BUY/SELL
+    let missionTarget = "-";
+    let h1RangeFull = levels.H1.high - levels.H1.low;
+    if (primaryBias === "BUY") missionTarget = (levels.H1.high + (h1RangeFull * 0.618)).toFixed(5);
+    else if (primaryBias === "SELL") missionTarget = (levels.H1.low - (h1RangeFull * 0.618)).toFixed(5);
+
+    let finalTrueVersion = "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+    finalTrueVersion += "🏆 MACRO DOMINANT FINAL TRUE VERSION (AUDITED)\n";
+    finalTrueVersion += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n";
+    finalTrueVersion += "🎯 PRIMARY BIAS: " + primaryBias + "\n";
+    finalTrueVersion += "⚡ EXECUTION MODE: " + executionMode + "\n";
+    finalTrueVersion += "🏁 MISSION TARGET: " + missionTarget + "\n\n";
+    if (sweepMsg !== "") finalTrueVersion += sweepMsg;
+    if (h2BlockMsg !== "") finalTrueVersion += h2BlockMsg;
+
+    finalTrueVersion += "📝 EXECUTION NOTES:\n";
+    if (executionMode === "GOLDEN") {
+        finalTrueVersion += "• Selaras dengan parameter engine Macro-Expansion.\n";
+        finalTrueVersion += "• Tekanan memenuhi ambang valid untuk target besar.\n";
+        finalTrueVersion += "• Risk terukur berdasarkan 3-candle confirm.\n";
+    } else if (executionMode === "SCALP") {
+        finalTrueVersion += "• Selaras dengan parameter engine Intra-day Flow.\n";
+        finalTrueVersion += "• Tekanan memenuhi ambang valid untuk rotasi mikro.\n";
+    } else {
+        finalTrueVersion += "• Menunggu validasi parameter engine.\n";
+    }
+
+    deepConclusion.innerText += finalTrueVersion;
+
+    // LAYER 6 — RISK ENGINE PATUH PRIMARY BIAS (FIXED RR BUG)
+    if (primaryBias !== "WAIT") {
+        let rr = parseFloat(rrInput.value); // FIX: Redefined inside scope
+        let slVal = primaryBias === "BUY" ? levels.M15.low : levels.M15.high;
+        let dist = Math.abs(price - slVal);
+        let tpVal = primaryBias === "BUY" ? (price + (dist * rr)) : (price - (dist * rr));
+
+        entry.innerText = "Entry: " + price.toFixed(5);
+        sl.innerText = "Stop Loss: " + slVal.toFixed(5);
+        tp.innerText = "Take Profit: " + tpVal.toFixed(5);
+    } else {
+        entry.innerText = "Entry: - (WAIT)";
+        sl.innerText = "Stop Loss: -";
+        tp.innerText = "Take Profit: -";
+    }
+
+    // --- GOLDEN LOG RESTORED ---
+    let time = new Date().toLocaleTimeString();
+    logData.push(`[${time}] BIAS: ${primaryBias} | MODE: ${executionMode} | Price: ${price}`);
+    if(logData.length > 50) logData.shift();
+    document.getElementById("log").innerText = logData.join("\n");
+}
+</script>
+</body>
+</html>
